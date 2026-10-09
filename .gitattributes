@@ -1,2 +1,11 @@
-*.mp4 filter=lfs diff=lfs merge=lfs -text
-*.png filter=lfs diff=lfs merge=lfs -text
+# Untouched original media live in Git LFS and are NOT part of the website build.
+media/originals/** filter=lfs diff=lfs merge=lfs -text
+
+# Web-optimized derivatives (public/assets/memories) are small, regular files
+# so GitHub Pages and CI never need LFS bandwidth.
+*.webp binary
+*.mp4 binary
+*.png binary
+*.ico binary
+
+* text=auto eol=lf

@@ -1,2327 +1,442 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Starfall Meadow - Dream Drive 🌸🚗</title>
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&display=swap');
-    
-    :root {
-        --primary-color: #8a2be2;
-        --secondary-color: #00bfff;
-        --accent-color: #ff6b6b;
-        --dark-color: #2e294e;
-        --light-color: #f1e8ff;
-    }
-    
-    body {
-        margin: 0;
-        overflow: hidden;
-        font-family: 'Comfortaa', cursive;
-        background: linear-gradient(to top, #ffd6e0 0%, #a0c4ff 50%, #9bf6ff 100%);
-    }
-    
-    #canvas { 
-        display: block; 
-    }
-    
-    .ui-panel {
-        position: fixed;
-        background: rgba(46, 41, 78, 0.8);
-        color: var(--light-color);
-        padding: 15px 25px;
-        border-radius: 20px;
-        font-size: 16px;
-        z-index: 10;
-        box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
-        backdrop-filter: blur(8px);
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        transition: all 0.3s ease;
-    }
-    
-    .ui-panel:hover {
-        background: rgba(46, 41, 78, 0.9);
-        box-shadow: 0 8px 32px rgba(31, 38, 135, 0.6);
-    }
-    
-    #instructions {
-        bottom: 20px;
-        left: 20px;
-        transition: opacity 0.3s;
-    }
-    
-    #speedometer {
-        bottom: 20px;
-        right: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    /* #speed-value {
-        font-size: 24px;
-        font-weight: bold;
-        margin: 5px 0;
-        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-    } */
-    #speed-value {
-    font-size: 24px;
-    font-weight: bold;
-    margin: 5px 0;
-    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-    -webkit-background-clip: text;
-    -moz-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    -moz-text-fill-color: transparent;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-}
-    
-    #speed-label {
-        font-size: 14px;
-        opacity: 0.8;
-    }
-    
-    #speed-bar {
-        width: 100%;
-        height: 8px;
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 4px;
-        margin-top: 5px;
-        overflow: hidden;
-    }
-    
-    #speed-bar-fill {
-        height: 100%;
-        width: 0%;
-        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-        border-radius: 4px;
-        transition: width 0.2s;
-    }
-    
-    #boundary-warning {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: rgba(255, 107, 107, 0.9);
-        color: white;
-        padding: 20px 30px;
-        border-radius: 30px;
-        font-size: 20px;
-        font-weight: bold;
-        display: none;
-        z-index: 30;
-        box-shadow: 0 5px 25px rgba(255, 0, 0, 0.4);
-        animation: pulse-red 1.5s infinite;
-    }
-    
-    @keyframes pulse-red {
-        0% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7); }
-        70% { box-shadow: 0 0 0 20px rgba(255, 0, 0, 0); }
-        100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); }
-    }
-    
-    #popup {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(46, 41, 78, 0.8);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        z-index: 100;
-        backdrop-filter: blur(10px);
-    }
-    
-    #popup iframe, #popup img {
-        width: 80%;
-        max-width: 800px;
-        border-radius: 24px;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
-        border: 3px solid rgba(138, 43, 226, 0.3);
-        transition: transform 0.3s ease;
-    }
-    
-    #popup iframe {
-    width: 90%;  /* Make video wider */
-    max-width: 1000px;  /* Increase max width */
-    height: 70vh;  /* Make video taller, responsive to viewport height */
-    border-radius: 24px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
-    border: 3px solid rgba(138, 43, 226, 0.3);
-    transition: transform 0.3s ease;
-}
-    
-    #popup iframe:hover, #popup img:hover {
-        transform: scale(1.02);
-    }
-    
-    #memoryTitle {
-    color: white;
-    font-size: 32px;
-    margin-bottom: 25px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
-    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-    -webkit-background-clip: text;
-    -moz-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    -moz-text-fill-color: transparent;
-}
-    
-    #closeBtn {
-        margin-top: 25px;
-        padding: 14px 30px;
-        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-        color: white;
-        border: none;
-        border-radius: 30px;
-        cursor: pointer;
-        font-size: 18px;
-        font-family: 'Comfortaa', cursive;
-        font-weight: bold;
-        transition: all 0.3s;
-        box-shadow: 0 10px 20px rgba(138, 43, 226, 0.3);
-    }
-    
-    #closeBtn:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 25px rgba(138, 43, 226, 0.5);
-    }
-    
-    #interactPrompt {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: rgba(255, 255, 255, 0.95);
-        color: var(--dark-color);
-        padding: 15px 30px;
-        border-radius: 30px;
-        font-size: 20px;
-        font-weight: bold;
-        display: none;
-        z-index: 20;
-        box-shadow: 0 10px 30px rgba(138, 43, 226, 0.3);
-        animation: pulse-purple 1.5s infinite;
-    }
-    
-    @keyframes pulse-purple {
-        0% { box-shadow: 0 0 0 0 rgba(138, 43, 226, 0.7); }
-        70% { box-shadow: 0 0 0 20px rgba(138, 43, 226, 0); }
-        100% { box-shadow: 0 0 0 0 rgba(138, 43, 226, 0); }
-    }
-    
-    .loading {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(45deg, var(--dark-color), var(--primary-color));
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-    }
-    
-    .loading-container {
-        text-align: center;
-    }
-    
-    .loading-text {
-        font-size: 28px;
-        color: white;
-        text-align: center;
-        margin-top: 20px;
-        letter-spacing: 2px;
-        animation: glow 2s ease-in-out infinite alternate;
-    }
-    
-    @keyframes glow {
-        from { text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px var(--secondary-color), 0 0 20px var(--secondary-color); }
-        to { text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px var(--primary-color), 0 0 40px var(--primary-color); }
-    }
-    
-    .loading-subtitle {
-        font-size: 16px;
-        color: rgba(255, 255, 255, 0.8);
-        margin-top: 10px;
-    }
-    
-    .spinner {
-        width: 80px;
-        height: 80px;
-        display: inline-block;
-        border-radius: 50%;
-        background: conic-gradient(transparent 0%, var(--secondary-color));
-        -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 12px), #fff 0);
-        mask: radial-gradient(farthest-side, transparent calc(100% - 12px), #fff 0);
-        animation: spinner-animation 1s infinite linear;
-    }
-    
-    @keyframes spinner-animation {
-        to { transform: rotate(1turn); }
-    }
-    
-    #mini-map {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        width: 200px;
-        height: 200px;
-        border-radius: 50%;
-        overflow: hidden;
-        z-index: 10;
-        box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
-        border: 3px solid rgba(255, 255, 255, 0.18);
-        transition: all 0.3s ease;
-    }
-    
-    #mini-map-canvas {
-        width: 100%;
-        height: 100%;
-        background-color: rgba(46, 41, 78, 0.8);
-        backdrop-filter: blur(8px);
-    }
-    
-    #theme-toggle {
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        background: rgba(46, 41, 78, 0.8);
-        color: var(--light-color);
-        padding: 10px 15px;
-        border-radius: 30px;
-        font-size: 14px;
-        z-index: 10;
-        cursor: pointer;
-        box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
-        backdrop-filter: blur(8px);
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        transition: all 0.3s ease;
-    }
-    
-    #theme-toggle:hover {
-        background: rgba(46, 41, 78, 0.9);
-        transform: translateY(-2px);
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>PUKU — Starfall Meadow: Dream Drive</title>
+    <meta
+      name="description"
+      content="A tiny, dreamy 3D world in your browser. Drive through a pastel meadow and discover little memories along the way."
+    />
+    <meta name="theme-color" content="#c8c4ec" />
+    <meta name="color-scheme" content="light" />
+    <meta property="og:title" content="PUKU — Starfall Meadow: Dream Drive" />
+    <meta property="og:description" content="Every journey holds a memory. Drive through a dreamy meadow and discover little moments." />
+    <meta property="og:type" content="website" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="alternate icon" href="./favicon.ico" />
+  </head>
+  <body>
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false">
+      <defs>
+        <symbol id="i-map" viewBox="0 0 24 24">
+          <path
+            d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Zm0 0v14m6-12v14"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linejoin="round"
+          />
+        </symbol>
+        <symbol id="i-book" viewBox="0 0 24 24">
+          <path
+            d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5v-15Zm0 15A2.5 2.5 0 0 0 6.5 23H20v-5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linejoin="round"
+          />
+        </symbol>
+        <symbol id="i-camera" viewBox="0 0 24 24">
+          <path d="M4 8h3l2-3h6l2 3h3v11H4V8Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+          <circle cx="12" cy="13" r="3.5" fill="none" stroke="currentColor" stroke-width="1.8" />
+        </symbol>
+        <symbol id="i-gear" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8" />
+          <path
+            d="M12 2.5v3m0 13v3M2.5 12h3m13 0h3M5.3 5.3l2.1 2.1m9.2 9.2 2.1 2.1m0-13.4-2.1 2.1m-9.2 9.2-2.1 2.1"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+          />
+        </symbol>
+        <symbol id="i-help" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8" />
+          <path
+            d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17h.01"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+          />
+        </symbol>
+        <symbol id="i-sound" viewBox="0 0 24 24">
+          <path
+            d="M4 9v6h4l5 4V5L8 9H4Zm12.5-1.5a6 6 0 0 1 0 9m-2-6.5a2.5 2.5 0 0 1 0 4"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </symbol>
+        <symbol id="i-mute" viewBox="0 0 24 24">
+          <path
+            d="M4 9v6h4l5 4V5L8 9H4Zm12 0 5 6m0-6-5 6"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </symbol>
+        <symbol id="i-pause" viewBox="0 0 24 24">
+          <path d="M8 5v14m8-14v14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
+        </symbol>
+        <symbol id="i-close" viewBox="0 0 24 24">
+          <path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </symbol>
+        <symbol id="i-prev" viewBox="0 0 24 24">
+          <path d="m15 5-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </symbol>
+        <symbol id="i-next" viewBox="0 0 24 24">
+          <path d="m9 5 7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </symbol>
+        <symbol id="i-spark" viewBox="0 0 24 24">
+          <path
+            d="M12 2.5c.6 4.6 2.9 6.9 7.5 7.5-4.6.6-6.9 2.9-7.5 7.5-.6-4.6-2.9-6.9-7.5-7.5 4.6-.6 6.9-2.9 7.5-7.5Z"
+            fill="currentColor"
+          />
+        </symbol>
+      </defs>
+    </svg>
 
+    <canvas
+      id="scene"
+      tabindex="-1"
+      aria-label="Starfall Meadow, a 3D meadow you can drive around in. Use the journal to browse memories without driving."
+    ></canvas>
 
-    #canvas, body {
-    transform: translateZ(0);
-    backface-visibility: hidden;
-    perspective: 1000;
-    will-change: transform;
-}
-</style>
-</head>
-<body>
-<div class="loading">
-    <div class="loading-container">
-        <div class="spinner"></div>
-        <div class="loading-text">STARFALL MEADOW</div>
-        <div class="loading-subtitle">Loading your magical journey...</div>
+    <!-- Loading -->
+    <div id="loading" class="screen screen--loading" role="status" aria-live="polite">
+      <div class="loading__inner">
+        <div class="loading__mark" aria-hidden="true">
+          <svg><use href="#i-spark" /></svg>
+        </div>
+        <p class="loading__brand">PUKU</p>
+        <p class="loading__label" data-ref="label">Waking the meadow…</p>
+        <div
+          class="progress"
+          data-ref="bar"
+          role="progressbar"
+          aria-label="Loading"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="0"
+        >
+          <span></span>
+        </div>
+      </div>
     </div>
-</div>
 
-<div id="theme-toggle">Switch Theme</div>
-<!-- <div id="mini-map">
-    <canvas id="mini-map-canvas"></canvas>
-</div> -->
+    <!-- Welcome -->
+    <section id="welcome" class="screen screen--welcome" hidden aria-labelledby="welcome-title">
+      <div class="welcome__card">
+        <p class="welcome__eyebrow">PUKU · Dream Drive</p>
+        <h1 id="welcome-title" class="welcome__title" data-ref="title">Starfall Meadow</h1>
+        <p class="welcome__tagline" data-ref="tagline">Every journey holds a memory.</p>
+        <p class="welcome__intro" data-ref="intro">A small, dreamy world filled with little moments waiting to be discovered.</p>
+        <div class="welcome__actions">
+          <button class="btn btn--primary btn--lg" type="button" data-action="begin" data-testid="begin">
+            <svg aria-hidden="true"><use href="#i-spark" /></svg> Begin Journey
+          </button>
+          <div class="welcome__secondary">
+            <button class="btn btn--ghost" type="button" data-action="help">How to play</button>
+            <button class="btn btn--ghost" type="button" data-action="settings">Settings</button>
+            <button class="btn btn--ghost btn--icon" type="button" data-action="sound" aria-pressed="true" aria-label="Sound on">
+              <svg aria-hidden="true"><use href="#i-sound" /></svg>
+            </button>
+          </div>
+          <button class="link" type="button" data-action="gallery">Browse memories without driving</button>
+        </div>
+        <p class="welcome__progress" data-ref="progress" hidden></p>
+      </div>
+    </section>
 
-<div id="instructions" class="ui-panel">
-    <strong>Controls:</strong><br>
-    W/S: Accelerate/Reverse<br>
-    A/D: Steer<br>
-    E: Interact<br>
-    H: Hide/Show UI<br>
-    T: Toggle Mini-map
-</div>
+    <!-- HUD -->
+    <div id="hud" class="hud" hidden>
+      <header class="hud__top">
+        <button class="pill pill--counter" type="button" data-action="journal" data-testid="counter" aria-label="Open memory journal">
+          <svg aria-hidden="true"><use href="#i-spark" /></svg>
+          <span
+            ><span class="pill__label">Memories found</span> <strong data-ref="found">0</strong>&thinsp;/&thinsp;<span data-ref="total"
+              >0</span
+            ></span
+          >
+        </button>
+        <nav class="hud__tools" aria-label="Game controls">
+          <button
+            class="icon-btn"
+            type="button"
+            data-action="map"
+            aria-pressed="true"
+            aria-label="Toggle mini-map (T)"
+            title="Mini-map (T)"
+          >
+            <svg aria-hidden="true"><use href="#i-map" /></svg>
+          </button>
+          <button class="icon-btn" type="button" data-action="journal" aria-label="Memory journal (J)" title="Journal (J)">
+            <svg aria-hidden="true"><use href="#i-book" /></svg>
+          </button>
+          <button class="icon-btn" type="button" data-action="photo" aria-label="Photo mode (P)" title="Photo mode (P)">
+            <svg aria-hidden="true"><use href="#i-camera" /></svg>
+          </button>
+          <button class="icon-btn" type="button" data-action="settings" aria-label="Settings" title="Settings">
+            <svg aria-hidden="true"><use href="#i-gear" /></svg>
+          </button>
+          <button class="icon-btn" type="button" data-action="pause" aria-label="Pause (Esc)" title="Pause (Esc)">
+            <svg aria-hidden="true"><use href="#i-pause" /></svg>
+          </button>
+        </nav>
+      </header>
 
-<div id="speedometer" class="ui-panel">
-    <div id="speed-label">CURRENT SPEED</div>
-    <div id="speed-value">0</div>
-    <div id="speed-label">km/h</div>
-    <div id="speed-bar">
-        <div id="speed-bar-fill"></div>
+      <div class="minimap" data-ref="minimap">
+        <canvas
+          width="168"
+          height="168"
+          data-ref="minimapCanvas"
+          role="img"
+          aria-label="Mini-map showing your car and memory locations"
+        ></canvas>
+      </div>
+
+      <div class="prompt" data-ref="prompt" hidden>
+        <button class="prompt__btn" type="button" data-action="interact" data-testid="interact">
+          <svg aria-hidden="true"><use href="#i-spark" /></svg>
+          <span data-ref="promptText">Press <kbd>E</kbd> to discover</span>
+        </button>
+      </div>
+
+      <div class="hint" data-ref="hint" hidden>
+        <p class="hint__title">How to drive</p>
+        <ul class="hint__list" data-ref="hintList"></ul>
+        <button class="link" type="button" data-action="dismiss-hint">Got it</button>
+      </div>
+
+      <div class="speedo" data-testid="speedometer" aria-hidden="true">
+        <div class="speedo__value"><span data-ref="speed">0</span><span class="speedo__unit">km/h</span></div>
+        <div class="speedo__bar"><span data-ref="speedBar"></span></div>
+      </div>
+
+      <div class="toasts" data-ref="toasts" role="status" aria-live="polite"></div>
     </div>
-</div>
 
-<div id="boundary-warning">⚠️ Boundary Reached! Turn Around</div>
-<div id="interactPrompt">✨ Press E to interact ✨</div>
-
-<div id="popup">
-    <h3 id="memoryTitle">Dream Memory</h3>
-    <iframe id="popupContent" src="" frameborder="0" allowfullscreen style="display:none;"></iframe>
-    <img id="popupImage" src="" alt="Memory" style="display:none;">
-    <button id="closeBtn">Close Memory</button>
-</div>
-
-<canvas id="canvas"></canvas>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
-<script>
-// Global variables
-let scene, camera, renderer, clock;
-let car, velocity = 0, angle = 0;
-const maxSpeed = 12, acceleration = 0.25, friction = 0.03, turnSpeed = 0.025;
-let flowers = [], crystals = [], mushrooms = [], butterflies = [], pathways = [];
-let interactableObjects = [];
-let movement = { forward: false, backward: false, left: false, right: false };
-const INTERACTION_DISTANCE = 6;
-let isNight = false;
-let dayNightCycle = 0;
-let skyColor = new THREE.Color(0xc6e2ff);
-let groundColor = new THREE.Color(0xf7f0e8);
-let interactionPromptVisible = false;
-let instructionsVisible = true;
-let characterSprites = [];
-let characterMemories = [];
-
-// World boundary settings
-const WORLD_SIZE = 150; // Radius of circular boundary
-let boundaryWarningVisible = false;
-let boundaryWarningTimeout;
-
-// UI settings
-// let miniMapVisible = true;
-// let miniMapContext;
-let currentTheme = 0;
-const colorThemes = [
-    {
-        name: "Enchanted Dream",
-        primary: 0x8a2be2,    // Purple
-        secondary: 0x00bfff,  // Deep Sky Blue
-        accent: 0xff6b6b,     // Coral Pink
-        carColor: 0x9966ff,   // Amethyst Purple
-        ground: {
-            base: 0xd1c4e9,   // Lavender
-            detail: 0xb39ddb   // Deeper Lavender
-        }
-    },
-    {
-        name: "Sunset Oasis",
-        primary: 0xff7e5f,    // Coral
-        secondary: 0xfeb47b,  // Light Orange
-        accent: 0x7debff,     // Sky Blue
-        carColor: 0xff5e62,   // Reddish Coral
-        ground: {
-            base: 0xffe8d6,   // Sandy Beige
-            detail: 0xf4d6ab   // Darker Sand
-        }
-    },
-    {
-        name: "Crystal Forest",
-        primary: 0x0072ff,    // Bright Blue
-        secondary: 0x00c6ff,  // Lighter Blue
-        accent: 0x72e873,     // Bright Green
-        carColor: 0x0091ea,   // Vivid Blue
-        ground: {
-            base: 0xc8e6c9,   // Mint Green
-            detail: 0x81c784   // Darker Mint
-        }
-    },
-    {
-        name: "Cosmic Night",
-        primary: 0x311b92,    // Deep Purple
-        secondary: 0x6200ea,  // Electric Indigo
-        accent: 0xff9e80,     // Light Coral
-        carColor: 0x3d5afe,   // Indigo Blue
-        ground: {
-            base: 0x263238,   // Dark Bluish Gray
-            detail: 0x37474f   // Slate Gray
-        }
-    }
-];
-
-// Asset loading tracking
-let assetsToLoad = 0;
-let assetsLoaded = 0;
-
-// Initialize the scene
-init();
-
-function init() {
-    // Create scene with fog for atmosphere
-    scene = new THREE.Scene();
-    scene.fog = new THREE.Fog(0xc6e2ff, 30, 120);
-    
-    // Setup camera
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-    camera.position.set(0, 5, 15);
-    
-    // Setup renderer
-    renderer = new THREE.WebGLRenderer({
-    canvas: document.getElementById('canvas'), 
-    antialias: false, // Disable antialiasing to improve performance
-    powerPreference: "high-performance",
-    alpha: true,
-    logarithmicDepthBuffer: true
-    });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Limit pixel ratio
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.BasicShadowMap; // Less computationally expensive
-    renderer.shadowMap.autoUpdate = false; // Manually update shadows
-    renderer.setClearColor(0x000000, 0); // Transparent background
-    
-    // Setup clock for time-based animations
-    clock = new THREE.Clock();
-
-    // Lighting setup
-    setupLighting();
-    
-    // Create ground
-    createGround();
-    
-    // Create game objects
-    createCar();
-    createFlowers();
-    createCrystals();
-    createMushrooms();
-    createButterflies();
-    createPathways();
-    createCharacterSprites();
-    
-    // Setup event listeners
-    window.addEventListener('resize', onWindowResize);
-    window.addEventListener('keydown', onKeyDown);
-    window.addEventListener('keyup', onKeyUp);
-    document.getElementById('closeBtn').addEventListener('click', closePopup);
-    
-    // Hide loading screen when assets are loaded
-    checkLoading();
-    
-    // Start animation loop
-    animate();
-}
-
-function setupLighting() {
-    // Ambient lighting
-    const ambient = new THREE.AmbientLight(0xffffff, 0.5);
-    scene.add(ambient);
-    
-    // Main directional light (sun)
-    const dirLight = new THREE.DirectionalLight(0xfffaf0, 1);
-    dirLight.position.set(30, 50, 10);
-    dirLight.castShadow = true;
-    dirLight.shadow.mapSize.width = 2048;
-    dirLight.shadow.mapSize.height = 2048;
-    dirLight.shadow.camera.far = 150;
-    dirLight.shadow.camera.left = -50;
-    dirLight.shadow.camera.right = 50;
-    dirLight.shadow.camera.top = 50;
-    dirLight.shadow.camera.bottom = -50;
-    scene.add(dirLight);
-    
-    // Add some point lights for nighttime
-    for (let i = 0; i < 6; i++) {
-        const pointLight = new THREE.PointLight(0xff9dff, 3, 15);
-        const x = (Math.random() - 0.5) * 100;
-        const z = (Math.random() - 0.5) * 100;
-        pointLight.position.set(x, 2, z);
-        pointLight.visible = false; // Only visible at night
-        scene.add(pointLight);
-    }
-}
-
-function createGround() {
-    // Create a more interesting ground with patterns and textures
-    const worldSize = WORLD_SIZE * 1.5; // Slightly larger than the boundary
-    
-    // Base ground
-    const groundGeometry = new THREE.PlaneGeometry(worldSize * 2, worldSize * 2, 100, 100);
-    
-    // Add significant elevation variations for a more interesting landscape
-    const vertices = groundGeometry.attributes.position.array;
-    for (let i = 0; i < vertices.length; i += 3) {
-        const x = vertices[i];
-        const z = vertices[i + 2];
-        const distance = Math.sqrt(x * x + z * z);
-        
-        if (distance < worldSize * 0.9) {
-            // Inside the boundary - add gentle hills and valleys
-            if (Math.random() > 0.7) {
-                vertices[i + 1] = Math.sin(x * 0.05) * Math.cos(z * 0.05) * 1.5;
-            } else {
-                vertices[i + 1] = Math.random() * 0.5 - 0.25;
-            }
-            
-            // Add a few random hills
-            const numHills = 5;
-            for (let j = 0; j < numHills; j++) {
-                const hillX = (Math.random() - 0.5) * worldSize;
-                const hillZ = (Math.random() - 0.5) * worldSize;
-                const hillRadius = Math.random() * 15 + 10;
-                const hillHeight = Math.random() * 2 + 1;
-                
-                const distToHill = Math.sqrt(
-                    Math.pow(x - hillX, 2) + Math.pow(z - hillZ, 2)
-                );
-                
-                if (distToHill < hillRadius) {
-                    const heightFactor = 1 - (distToHill / hillRadius);
-                    vertices[i + 1] += Math.cos(heightFactor * Math.PI / 2) * hillHeight;
-                }
-            }
-        } else {
-            // Outside the boundary - create a mountain range barrier
-            const distFromBoundary = distance - worldSize * 0.9;
-            vertices[i + 1] = distFromBoundary * 0.5 + Math.random() * 2;
-        }
-    }
-    
-    // Update normals after changing vertices
-    groundGeometry.computeVertexNormals();
-    
-    // Create ground material with current theme
-    const currentGroundTheme = colorThemes[currentTheme].ground;
-    const groundMaterial = new THREE.MeshStandardMaterial({
-        color: currentGroundTheme.base,
-        roughness: 0.8,
-        metalness: 0.1,
-        flatShading: false
-    });
-    
-    const ground = new THREE.Mesh(groundGeometry, groundMaterial);
-    ground.rotation.x = -Math.PI / 2;
-    ground.receiveShadow = true;
-    scene.add(ground);
-    
-    // Add ground patterns and details
-    createGroundPatterns(worldSize, currentGroundTheme);
-    
-    // Add boundary visualization
-    createBoundaryCircle();
-}
-
-function createGroundPatterns(worldSize, groundTheme) {
-    // Create patches of slightly different colored ground for visual interest
-    for (let i = 0; i < 50; i++) {
-        const patchSize = Math.random() * 20 + 10;
-        const patchGeometry = new THREE.CircleGeometry(patchSize, 16);
-        
-        // Randomly select detail color or slight variation
-        const color = new THREE.Color(groundTheme.detail);
-        color.r += (Math.random() - 0.5) * 0.1;
-        color.g += (Math.random() - 0.5) * 0.1;
-        color.b += (Math.random() - 0.5) * 0.1;
-        
-        const patchMaterial = new THREE.MeshStandardMaterial({
-            color: color,
-            roughness: 0.9,
-            opacity: Math.random() * 0.5 + 0.5,
-            transparent: true,
-            flatShading: false
-        });
-        
-        const patch = new THREE.Mesh(patchGeometry, patchMaterial);
-        
-        // Position within the world boundary
-        const angle = Math.random() * Math.PI * 2;
-        const radius = Math.random() * (worldSize * 0.8);
-        patch.position.set(
-            Math.cos(angle) * radius,
-            0.01, // Slightly above ground to prevent z-fighting
-            Math.sin(angle) * radius
-        );
-        
-        patch.rotation.x = -Math.PI / 2;
-        patch.receiveShadow = true;
-        scene.add(patch);
-    }
-    
-    // Add some grass patches
-    for (let i = 0; i < 40; i++) {
-        const grassPatchSize = Math.random() * 15 + 8;
-        const grassGeometry = new THREE.PlaneGeometry(grassPatchSize, grassPatchSize);
-        
-        // Create an animated grass-like material
-        const grassMaterial = new THREE.MeshStandardMaterial({
-            color: 0x66bb6a,
-            roughness: 1.0,
-            metalness: 0.0,
-            transparent: true,
-            opacity: 0.9,
-            side: THREE.DoubleSide
-        });
-        
-        // Add some random variations to grass color
-        grassMaterial.color.r += (Math.random() - 0.5) * 0.1;
-        grassMaterial.color.g += (Math.random() - 0.5) * 0.1;
-        
-        const grassPatch = new THREE.Mesh(grassGeometry, grassMaterial);
-        
-        // Position within the world boundary but not in center
-        const angle = Math.random() * Math.PI * 2;
-        const radius = Math.random() * (worldSize * 0.7) + (worldSize * 0.2);
-        grassPatch.position.set(
-            Math.cos(angle) * radius,
-            0.05, // Above ground to be visible
-            Math.sin(angle) * radius
-        );
-        
-        grassPatch.rotation.x = -Math.PI / 2;
-        grassPatch.receiveShadow = true;
-        scene.add(grassPatch);
-        
-        // Add slight animation to grass for wind effect
-        grassPatch.userData = {
-            windSpeed: Math.random() * 0.01 + 0.005,
-            originalRotation: grassPatch.rotation.clone()
-        };
-    }
-}
-
-
-function loadCharacterMemories() {
-    const imageFiles = [
-        'image1.png', 'image2.png', 'image3.png', 
-        'image4.png', 'image5.png','image6.png', 'image7.png', 'image8.png', 
-        'image9.png', 'image10.png','image11.png','image12.png','image13.png',
-        'image14.png','image15.png','image16.png','image17.png','image18.png', // Add all your image filenames
-    ];
-
-    const videoFiles = [
-        'video1.mp4', 'video2.mp4', 'video3.mp4', 
-        'video4.mp4', 'video5.mp4',
-        'video6.mp4', 'video7.mp4', 'video8.mp4', 
-        'video9.mp4', 'video10.mp4','video11.mp4','video12.mp4',
-        'video13.mp4', 'video14.mp4', 'video15.mp4','video16.mp4',
-        'video17.mp4', 'video18.mp4',
-    ];
-
-    // Ensure we have matching number of images and videos
-    if (imageFiles.length !== videoFiles.length) {
-        console.error('Mismatch in number of images and videos');
-        return;
-    }
-
-    characterMemories = imageFiles.map((image, index) => ({
-        image: `utils/${image}`,
-        video: `utils/${videoFiles[index]}`,
-        title: generateCharacterMemoryTitle()
-    }));
-}
-
-
-
-function createCharacterSprites() {
-    const textureLoader = new THREE.TextureLoader();
-    
-    // Load memories first
-    loadCharacterMemories();
-
-    // Track placed sprite positions to ensure spacing
-    const placedPositions = [];
-
-    // Minimum distance between sprites
-    const MIN_DISTANCE = 20; // Adjust this value to control spacing
-
-    const totalMemories = characterMemories.length;
-    
-    // Special positioning for initial memories near car
-    const initialMemoryPositions = [
-        new THREE.Vector3(20, 1.5, 20),
-        new THREE.Vector3(-20, 1.5, 20),
-        new THREE.Vector3(20, 1.5, -20),
-        new THREE.Vector3(-20, 1.5, -20)
-    ];
-
-    // Place initial memories near car
-    for (let i = 0; i < Math.min(initialMemoryPositions.length, totalMemories); i++) {
-        const memory = characterMemories[i];
-        
-        textureLoader.load(memory.image, (texture) => {
-            const spriteMaterial = new THREE.SpriteMaterial({ 
-                map: texture,
-                transparent: true,
-                opacity: 1
-            });
-
-            const sprite = new THREE.Sprite(spriteMaterial);
-            sprite.scale.set(5, 5, 5);
-            sprite.position.copy(initialMemoryPositions[i]);
-
-            scene.add(sprite);
-            characterSprites.push(sprite);
-            placedPositions.push(initialMemoryPositions[i]);
-
-            // Add to interactable objects with specific memory
-            interactableObjects.push({
-                object: sprite,
-                type: 'character',
-                memoryTitle: memory.title,
-                imageUrl: memory.image,
-                videoUrl: memory.video
-            });
-        });
-    }
-
-    // Place remaining sprites in the world
-    for (let i = initialMemoryPositions.length; i < 30; i++) {
-        let attempts = 0;
-        let validPosition = false;
-        let spritePosition;
-
-        while (!validPosition && attempts < 100) {
-            // Generate a random position within the world
-            const angle = Math.random() * Math.PI * 2;
-            const radius = Math.random() * (WORLD_SIZE * 0.8);
-            spritePosition = new THREE.Vector3(
-                Math.cos(angle) * radius,
-                1.5 + Math.random(), // Slightly above ground
-                Math.sin(angle) * radius
-            );
-
-            // Check distance from car's starting position and other sprites
-            const carStartDistance = spritePosition.distanceTo(new THREE.Vector3(0, 0, 0)) > 25;
-            const spriteSpacing = placedPositions.every(pos => 
-                spritePosition.distanceTo(pos) >= MIN_DISTANCE
-            );
-
-            validPosition = carStartDistance && spriteSpacing;
-            attempts++;
-        }
-
-        // If a valid position is found, create the sprite
-        if (validPosition) {
-            // Cycle through memories, wrapping around if needed
-            const memory = characterMemories[(i - initialMemoryPositions.length) % totalMemories];
-            
-            textureLoader.load(memory.image, (texture) => {
-                const spriteMaterial = new THREE.SpriteMaterial({ 
-                    map: texture,
-                    transparent: true,
-                    opacity: 1
-                });
-
-                const sprite = new THREE.Sprite(spriteMaterial);
-                sprite.scale.set(5, 5, 5);
-                sprite.position.copy(spritePosition);
-
-                scene.add(sprite);
-                characterSprites.push(sprite);
-                placedPositions.push(spritePosition);
-
-                // Add to interactable objects with specific memory
-                interactableObjects.push({
-                    object: sprite,
-                    type: 'character',
-                    memoryTitle: memory.title,
-                    imageUrl: memory.image,
-                    videoUrl: memory.video
-                });
-            });
-        }
-    }
-
-    // Adjust the number of sprites if not all could be placed
-    console.log(`Placed ${placedPositions.length} character sprites`);
-
-    // Mark asset category as loaded
-    assetLoaded();
-}
-
-function generateCharacterMemoryTitle() {
-    const titles = [
-        "Shared Moment",
-        "Our Journey",
-        "Precious Memory",
-        "Together Forever",
-        "Life's Adventures",
-        "Cherished Times",
-        "Capturing Memories"
-    ];
-    
-    return titles[Math.floor(Math.random() * titles.length)];
-}
-
-// function createBoundaryCircle() {
-//     // Create a visual indicator for the world boundary
-//     const boundaryGeometry = new THREE.RingGeometry(WORLD_SIZE - 0.5, WORLD_SIZE, 64);
-//     const boundaryMaterial = new THREE.MeshBasicMaterial({
-//         color: colorThemes[currentTheme].accent,
-//         transparent: true,
-//         opacity: 0.3,
-//         side: THREE.DoubleSide
-//     });
-    
-//     const boundary = new THREE.Mesh(boundaryGeometry, boundaryMaterial);
-//     boundary.rotation.x = -Math.PI / 2;
-//     boundary.position.y = 0.1;
-//     scene.add(boundary);
-    
-//     // Add particle effects around boundary
-//     const particleCount = 200;
-//     const particleGeometry = new THREE.BufferGeometry();
-//     const particlePositions = [];
-    
-//     for (let i = 0; i < particleCount; i++) {
-//         const angle = (i / particleCount) * Math.PI * 2;
-//         particlePositions.push(
-//             Math.cos(angle) * WORLD_SIZE,
-//             Math.random() * 2 + 0.1,
-//             Math.sin(angle) * WORLD_SIZE
-//         );
-//     }
-    
-//     particleGeometry.setAttribute('position', new THREE.Float32BufferAttribute(particlePositions, 3));
-    
-//     const particleMaterial = new THREE.PointsMaterial({
-//         color: colorThemes[currentTheme].primary,
-//         size: 0.5,
-//         transparent: true,
-//         opacity: 0.8
-//     });
-    
-//     const particles = new THREE.Points(particleGeometry, particleMaterial);
-//     particles.userData = { isBoundaryParticle: true };
-//     scene.add(particles);
-// }
-
-function createBoundaryCircle() {
-    // Create a glowing energy barrier effect
-    const barrierGeometry = new THREE.SphereGeometry(WORLD_SIZE, 32, 32, 0, Math.PI * 2, 0, Math.PI / 2);
-    const barrierMaterial = new THREE.MeshBasicMaterial({
-        color: colorThemes[currentTheme].accent,
-        transparent: true,
-        opacity: 0.2,
-        wireframe: true
-    });
-    
-    const barrier = new THREE.Mesh(barrierGeometry, barrierMaterial);
-    barrier.rotation.x = Math.PI / 2;
-    scene.add(barrier);
-}
-
-function createCar() {
-    // Create a more stylish fantasy car with magical elements
-    car = new THREE.Group();
-    
-    // Get current theme car color
-    const carColor = colorThemes[currentTheme].carColor;
-    
-    // Body material with magical shimmer
-    const bodyMaterial = new THREE.MeshStandardMaterial({
-        color: carColor,
-        metalness: 0.7,
-        roughness: 0.1,
-        emissive: carColor,
-        emissiveIntensity: 0.1
-    });
-    
-    // Main car body - more stylized and fantasy-like
-    const bodyGeometry = new THREE.BoxGeometry(2.2, 0.6, 4.5);
-    // Round the edges by modifying vertices
-    modifyGeometryForRoundedEdges(bodyGeometry, 0.2);
-    
-    const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
-    body.position.y = 0.6;
-    body.castShadow = true;
-    car.add(body);
-    
-    // Car top/cabin - curved for a more elegant look
-    const topGeometry = new THREE.BoxGeometry(1.8, 0.8, 2.2);
-    modifyGeometryForRoundedEdges(topGeometry, 0.3);
-    
-    const top = new THREE.Mesh(topGeometry, bodyMaterial);
-    top.position.set(0, 1.25, -0.2);
-    top.castShadow = true;
-    car.add(top);
-    
-    // Hood with curve
-    const hoodGeometry = new THREE.BoxGeometry(2, 0.15, 1.2);
-    const hood = new THREE.Mesh(hoodGeometry, bodyMaterial);
-    hood.position.set(0, 0.7, 1.7);
-    car.add(hood);
-    
-    // Trunk with slight curve
-    const trunkGeometry = new THREE.BoxGeometry(1.9, 0.12, 0.8);
-    const trunk = new THREE.Mesh(trunkGeometry, bodyMaterial);
-    trunk.position.set(0, 0.7, -1.9);
-    car.add(trunk);
-    
-    // Windows with magical shimmer
-    const windowMaterial = new THREE.MeshPhysicalMaterial({
-        color: 0x88ccff,
-        metalness: 0.9,
-        roughness: 0.1,
-        opacity: 0.7,
-        transparent: true,
-        transmission: 0.5,
-        clearcoat: 1.0,
-        clearcoatRoughness: 0.1
-    });
-    
-    // Windshield
-    const windshieldGeometry = new THREE.PlaneGeometry(1.7, 0.9);
-    const windshield = new THREE.Mesh(windshieldGeometry, windowMaterial);
-    windshield.position.set(0, 1.3, 0.8);
-    windshield.rotation.x = Math.PI / 5;
-    car.add(windshield);
-    
-    // Rear window
-    const rearWindowGeometry = new THREE.PlaneGeometry(1.7, 0.8);
-    const rearWindow = new THREE.Mesh(rearWindowGeometry, windowMaterial);
-    rearWindow.position.set(0, 1.3, -1.3);
-    rearWindow.rotation.x = -Math.PI / 5;
-    car.add(rearWindow);
-    
-    // Side windows
-    for (let x of [-0.9, 0.9]) {
-        const sideWindowGeometry = new THREE.PlaneGeometry(1.8, 0.7);
-        const sideWindow = new THREE.Mesh(sideWindowGeometry, windowMaterial);
-        sideWindow.position.set(x, 1.3, -0.2);
-        sideWindow.rotation.y = x > 0 ? -Math.PI / 2 : Math.PI / 2;
-        car.add(sideWindow);
-    }
-    
-    // Magical headlights that match theme accent color
-    const headlightMaterial = new THREE.MeshStandardMaterial({
-        color: 0xffffff,
-        emissive: colorThemes[currentTheme].secondary,
-        emissiveIntensity: 1,
-        transparent: true,
-        opacity: 0.9
-    });
-    
-    for (let x of [-0.8, 0.8]) {
-        // Main headlight
-        const headlight = new THREE.Mesh(
-            new THREE.SphereGeometry(0.25, 16, 16),
-            headlightMaterial
-        );
-        headlight.position.set(x, 0.6, 2.2);
-        car.add(headlight);
-        
-        // Headlight glass cover
-        const headlightCover = new THREE.Mesh(
-            new THREE.SphereGeometry(0.28, 16, 16, 0, Math.PI),
-            windowMaterial
-        );
-        headlightCover.position.set(x, 0.6, 2.2);
-        headlightCover.rotation.y = Math.PI / 2;
-        car.add(headlightCover);
-        
-        // Add light source
-        const headlightLight = new THREE.SpotLight(
-            colorThemes[currentTheme].secondary, 2, 30, Math.PI / 6, 0.5, 1
-        );
-        headlightLight.position.set(x, 0.6, 2.2);
-        headlightLight.target.position.set(x, 0, 15);
-        car.add(headlightLight);
-        car.add(headlightLight.target);
-    }
-    
-    // Taillights that match theme primary color
-    const taillightMaterial = new THREE.MeshStandardMaterial({
-        color: colorThemes[currentTheme].primary,
-        emissive: colorThemes[currentTheme].primary,
-        emissiveIntensity: 0.8,
-        transparent: true,
-        opacity: 0.9
-    });
-    
-    for (let x of [-0.8, 0.8]) {
-        const taillight = new THREE.Mesh(
-            new THREE.SphereGeometry(0.18, 12, 12),
-            taillightMaterial
-        );
-        taillight.position.set(x, 0.6, -2.2);
-        car.add(taillight);
-        
-        // Add smaller red light for brake light
-        const brakeLight = new THREE.PointLight(0xff0000, 0.5, 5);
-        brakeLight.position.set(x, 0.6, -2.3);
-        car.add(brakeLight);
-    }
-    
-    // Fancy wheels with glowing rims
-    createFancyWheels();
-    
-    // Add magical particle effects
-    createCarParticleEffects();
-    
-    // Position the car
-    car.position.y = 0.5;
-    car.castShadow = true;
-    scene.add(car);
-}
-
-function modifyGeometryForRoundedEdges(geometry, radius) {
-    // Simple function to round edges of box geometries
-    if (geometry.isBufferGeometry) {
-        const position = geometry.attributes.position;
-        
-        for (let i = 0; i < position.count; i++) {
-            const x = position.getX(i);
-            const y = position.getY(i);
-            const z = position.getZ(i);
-            
-            const length = Math.sqrt(x * x + y * y + z * z);
-            
-            if (length > 0) {
-                position.setX(i, x * (1 - radius / length));
-                position.setY(i, y * (1 - radius / length));
-                position.setZ(i, z * (1 - radius / length));
-            }
-        }
-        
-        geometry.computeVertexNormals();
-    }
-}
-
-function createFancyWheels() {
-    // Wheel materials
-    const wheelMaterial = new THREE.MeshStandardMaterial({
-        color: 0x222222,
-        roughness: 0.7,
-        metalness: 0.1
-    });
-    
-    const rimMaterial = new THREE.MeshStandardMaterial({
-        color: colorThemes[currentTheme].secondary,
-        metalness: 0.9,
-        roughness: 0.1,
-        emissive: colorThemes[currentTheme].secondary,
-        emissiveIntensity: 0.3
-    });
-    
-    // Create custom wheels for fantasy look
-    for (let x of [-1.1, 1.1]) {
-        for (let z of [-1.5, 1.5]) {
-            const wheelGroup = new THREE.Group();
-            
-            // Tire
-            const wheelWidth = 0.4;
-            const wheel = new THREE.Mesh(
-                new THREE.CylinderGeometry(0.5, 0.5, wheelWidth, 24),
-                wheelMaterial
-            );
-            wheel.rotation.z = Math.PI / 2;
-            wheelGroup.add(wheel);
-            
-            // Fancy rim
-            const rim = new THREE.Mesh(
-                new THREE.TorusGeometry(0.3, 0.05, 16, 24),
-                rimMaterial
-            );
-            rim.rotation.y = Math.PI / 2;
-            wheelGroup.add(rim);
-            
-            // Spokes in a star pattern
-            const spokeCount = 5;
-            for (let i = 0; i < spokeCount; i++) {
-                const angle = (i / spokeCount) * Math.PI * 2;
-                
-                // Main spoke
-                const spoke = new THREE.Mesh(
-                    new THREE.BoxGeometry(0.08, 0.08, 0.6),
-                    rimMaterial
-                );
-                spoke.position.z = 0;
-                spoke.rotation.z = angle;
-                wheelGroup.add(spoke);
-                
-                // Cross spoke
-                const crossSpoke = new THREE.Mesh(
-                    new THREE.BoxGeometry(0.06, 0.06, 0.5),
-                    rimMaterial
-                );
-                crossSpoke.position.z = 0;
-                crossSpoke.rotation.z = angle + Math.PI / spokeCount;
-                wheelGroup.add(crossSpoke);
-            }
-            
-            // Hub cap
-            const hubCap = new THREE.Mesh(
-                new THREE.SphereGeometry(0.15, 16, 16),
-                rimMaterial
-            );
-            hubCap.position.z = wheelWidth / 2 + 0.01;
-            wheelGroup.add(hubCap);
-            
-            // Add a point light in the rim for glow effect
-            const rimLight = new THREE.PointLight(
-                colorThemes[currentTheme].secondary, 0.5, 1
-            );
-            wheelGroup.add(rimLight);
-            
-            // Position wheel on car
-            wheelGroup.position.set(x, 0.5, z);
-            car.add(wheelGroup);
-            
-            // Store for animation
-            wheelGroup.userData = { isWheel: true };
-        }
-    }
-}
-
-function createCarParticleEffects() {
-    // Add magical particle trail effects
-    const particleCount = 50;
-    const particleGeometry = new THREE.BufferGeometry();
-    const particlePositions = new Float32Array(particleCount * 3);
-    const particleSizes = new Float32Array(particleCount);
-    
-    // Initialize particle positions and sizes
-    for (let i = 0; i < particleCount; i++) {
-        const i3 = i * 3;
-        particlePositions[i3] = (Math.random() - 0.5) * 2;
-        particlePositions[i3 + 1] = Math.random() * 0.5;
-        particlePositions[i3 + 2] = (Math.random() - 0.5) * 4 - 2; // Behind the car
-        
-        particleSizes[i] = Math.random() * 0.2 + 0.1;
-    }
-    
-    particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-    particleGeometry.setAttribute('size', new THREE.BufferAttribute(particleSizes, 1));
-    
-    // Create a custom shader material for particles
-    const particleMaterial = new THREE.PointsMaterial({
-        color: colorThemes[currentTheme].primary,
-        size: 0.5,
-        transparent: true,
-        opacity: 0.7,
-        blending: THREE.AdditiveBlending
-    });
-    
-    const particles = new THREE.Points(particleGeometry, particleMaterial);
-    particles.userData = { isCarParticle: true };
-    car.add(particles);
-    
-    // Add a subtle glow around the car
-    const glowGeometry = new THREE.SphereGeometry(3, 16, 16);
-    const glowMaterial = new THREE.MeshBasicMaterial({
-        color: colorThemes[currentTheme].primary,
-        transparent: true,
-        opacity: 0.1,
-        side: THREE.BackSide
-    });
-    
-    const glow = new THREE.Mesh(glowGeometry, glowMaterial);
-    glow.userData = { isCarGlow: true };
-    car.add(glow);
-}
-
-// function createCar() {
-//     // Create a more detailed car model
-//     car = new THREE.Group();
-    
-//     // Body color with metallic shine
-//     const bodyMaterial = new THREE.MeshStandardMaterial({
-//         color: 0xff6f9c,
-//         metalness: 0.5,
-//         roughness: 0.2
-//     });
-    
-//     // Main car body
-//     const body = new THREE.Mesh(
-//         new THREE.BoxGeometry(2, 0.6, 4.2),
-//         bodyMaterial
-//     );
-//     body.position.y = 0.6;
-//     body.castShadow = true;
-//     car.add(body);
-    
-//     // Car top/cabin
-//     const top = new THREE.Mesh(
-//         new THREE.BoxGeometry(1.7, 0.7, 2),
-//         bodyMaterial
-//     );
-//     top.position.set(0, 1.25, -0.3);
-//     top.castShadow = true;
-//     car.add(top);
-    
-//     // Hood
-//     const hood = new THREE.Mesh(
-//         new THREE.BoxGeometry(1.8, 0.1, 1),
-//         bodyMaterial
-//     );
-//     hood.position.set(0, 0.65, 1.6);
-//     car.add(hood);
-    
-//     // Car details - headlights
-//     const headlightMaterial = new THREE.MeshStandardMaterial({
-//         color: 0xffffee,
-//         emissive: 0xffffee,
-//         emissiveIntensity: 0.5
-//     });
-    
-//     for (let x of [-0.7, 0.7]) {
-//         const headlight = new THREE.Mesh(
-//             new THREE.SphereGeometry(0.2, 8, 8),
-//             headlightMaterial
-//         );
-//         headlight.position.set(x, 0.6, 2);
-//         car.add(headlight);
-//     }
-    
-//     // Car details - taillights
-//     const taillightMaterial = new THREE.MeshStandardMaterial({
-//         color: 0xff0000,
-//         emissive: 0xff0000,
-//         emissiveIntensity: 0.3
-//     });
-    
-//     for (let x of [-0.7, 0.7]) {
-//         const taillight = new THREE.Mesh(
-//             new THREE.SphereGeometry(0.15, 8, 8),
-//             taillightMaterial
-//         );
-//         taillight.position.set(x, 0.6, -2);
-//         car.add(taillight);
-//     }
-    
-//     // Car details - windows
-//     const windowMaterial = new THREE.MeshStandardMaterial({
-//         color: 0x88ccff,
-//         metalness: 0.9,
-//         roughness: 0.1,
-//         opacity: 0.7,
-//         transparent: true
-//     });
-    
-//     // Windshield
-//     const windshield = new THREE.Mesh(
-//         new THREE.PlaneGeometry(1.5, 0.7),
-//         windowMaterial
-//     );
-//     windshield.position.set(0, 1.25, 0.7);
-//     windshield.rotation.x = Math.PI / 4;
-//     car.add(windshield);
-    
-//     // Rear window
-//     const rearWindow = new THREE.Mesh(
-//         new THREE.PlaneGeometry(1.5, 0.7),
-//         windowMaterial
-//     );
-//     rearWindow.position.set(0, 1.25, -1.3);
-//     rearWindow.rotation.x = -Math.PI / 4;
-//     car.add(rearWindow);
-    
-//     // Side windows
-//     for (let x of [-0.85, 0.85]) {
-//         const sideWindow = new THREE.Mesh(
-//             new THREE.PlaneGeometry(1.6, 0.6),
-//             windowMaterial
-//         );
-//         sideWindow.position.set(x, 1.25, -0.3);
-//         sideWindow.rotation.y = x > 0 ? -Math.PI / 2 : Math.PI / 2;
-//         car.add(sideWindow);
-//     }
-    
-//     // Wheels with better detail
-//     const wheelMaterial = new THREE.MeshStandardMaterial({
-//         color: 0x222222,
-//         roughness: 0.9
-//     });
-    
-//     const wheelRimMaterial = new THREE.MeshStandardMaterial({
-//         color: 0xdddddd,
-//         metalness: 0.8,
-//         roughness: 0.2
-//     });
-    
-//     for (let x of [-0.9, 0.9]) {
-//         for (let z of [-1.5, 1.5]) {
-//             const wheelGroup = new THREE.Group();
-            
-//             // Tire
-//             const wheel = new THREE.Mesh(
-//                 new THREE.CylinderGeometry(0.4, 0.4, 0.35, 16),
-//                 wheelMaterial
-//             );
-//             wheel.rotation.z = Math.PI / 2;
-//             wheelGroup.add(wheel);
-            
-//             // Wheel rim
-//             const rim = new THREE.Mesh(
-//                 new THREE.CylinderGeometry(0.25, 0.25, 0.36, 16),
-//                 wheelRimMaterial
-//             );
-//             rim.rotation.z = Math.PI / 2;
-//             wheelGroup.add(rim);
-            
-//             // Spokes
-//             for (let i = 0; i < 5; i++) {
-//                 const spoke = new THREE.Mesh(
-//                     new THREE.BoxGeometry(0.08, 0.37, 0.05),
-//                     wheelRimMaterial
-//                 );
-//                 spoke.rotation.z = i * Math.PI / 2.5;
-//                 wheelGroup.add(spoke);
-//             }
-            
-//             wheelGroup.position.set(x, 0.4, z);
-//             car.add(wheelGroup);
-//         }
-//     }
-    
-//     // Position the car
-//     car.position.y = 0.4;
-//     car.castShadow = true;
-//     scene.add(car);
-// }
-
-function createFlowers() {
-    const flowerTypes = [
-        { 
-            color: 0xff69b4, // Pink
-            height: 2,
-            petalCount: 8,
-            petalSize: 0.5,
-            stemColor: 0x00aa00
-        },
-        { 
-            color: 0xffd700, // Yellow
-            height: 1.5,
-            petalCount: 12,
-            petalSize: 0.3,
-            stemColor: 0x00aa00
-        },
-        { 
-            color: 0x7fffd4, // Aquamarine
-            height: 2.2,
-            petalCount: 6,
-            petalSize: 0.6,
-            stemColor: 0x008800
-        }
-    ];
-    
-    // Create more flowers for a fuller field
-    for (let i = 0; i < 50; i++) {
-        const flowerType = flowerTypes[Math.floor(Math.random() * flowerTypes.length)];
-        const flower = createFlower(flowerType);
-        
-        // Position randomly in the world
-        flower.position.set(
-            (Math.random() - 0.5) * 200, 
-            0, 
-            (Math.random() - 0.5) * 200
-        );
-        
-        // Random rotation for variety
-        flower.rotation.y = Math.random() * Math.PI * 2;
-        
-        // Add to scene and track
-        scene.add(flower);
-        flowers.push(flower);
-        
-        // Make some flowers interactable (memories)
-        if (Math.random() > 0.7) {
-            interactableObjects.push({
-                object: flower,
-                type: 'flower',
-                memoryTitle: generateMemoryTitle(),
-                isVideo: Math.random() > 0.6
-            });
-        }
-    }
-    
-    // Mark asset category as loaded
-    assetLoaded();
-}
-
-function createFlower(options) {
-    const flower = new THREE.Group();
-    
-    // Create stem
-    const stemGeometry = new THREE.CylinderGeometry(0.08, 0.1, options.height, 8);
-    const stemMaterial = new THREE.MeshStandardMaterial({ 
-        color: options.stemColor,
-        roughness: 0.8
-    });
-    const stem = new THREE.Mesh(stemGeometry, stemMaterial);
-    stem.position.y = options.height / 2;
-    stem.castShadow = true;
-    flower.add(stem);
-    
-    // Create flower center (pistil)
-    const pistilGeometry = new THREE.SphereGeometry(options.petalSize * 0.7, 12, 12);
-    const pistilMaterial = new THREE.MeshStandardMaterial({
-        color: new THREE.Color(options.color).multiplyScalar(0.7),
-        roughness: 0.6
-    });
-    const pistil = new THREE.Mesh(pistilGeometry, pistilMaterial);
-    pistil.position.y = options.height;
-    pistil.castShadow = true;
-    flower.add(pistil);
-    
-    // Create petals
-    const petalMaterial = new THREE.MeshStandardMaterial({
-        color: options.color,
-        emissive: options.color,
-        emissiveIntensity: 0.2,
-        roughness: 0.5,
-        side: THREE.DoubleSide
-    });
-    
-    for (let j = 0; j < options.petalCount; j++) {
-        // Create curved petal shape using custom geometry
-        const petalShape = new THREE.Shape();
-        petalShape.moveTo(0, 0);
-        petalShape.quadraticCurveTo(options.petalSize * 0.5, options.petalSize * 1.5, options.petalSize, 0);
-        petalShape.quadraticCurveTo(options.petalSize * 0.5, options.petalSize * -0.5, 0, 0);
-        
-        const petalGeometry = new THREE.ShapeGeometry(petalShape);
-        const petal = new THREE.Mesh(petalGeometry, petalMaterial);
-        
-        // Position around center
-        const angle = (j / options.petalCount) * Math.PI * 2;
-        petal.position.set(
-            Math.cos(angle) * options.petalSize * 0.7,
-            options.height,
-            Math.sin(angle) * options.petalSize * 0.7
-        );
-        
-        // Orient outward
-        petal.rotation.x = -Math.PI / 2;
-        petal.rotation.z = -angle;
-        
-        // Optional slight random tilt for natural look
-        petal.rotation.y = (Math.random() - 0.5) * 0.2;
-        
-        petal.castShadow = true;
-        flower.add(petal);
-    }
-    
-    // Add leaves
-    const leafShape = new THREE.Shape();
-    leafShape.moveTo(0, 0);
-    leafShape.quadraticCurveTo(0.5, 0.5, 1, 0);
-    leafShape.quadraticCurveTo(0.5, -0.2, 0, 0);
-    
-    const leafGeometry = new THREE.ShapeGeometry(leafShape);
-    const leafMaterial = new THREE.MeshStandardMaterial({
-        color: 0x00cc00,
-        side: THREE.DoubleSide,
-        roughness: 0.8
-    });
-    
-    for (let i = 0; i < 2; i++) {
-        const leaf = new THREE.Mesh(leafGeometry, leafMaterial);
-        leaf.position.y = options.height * 0.4 * (i + 1) / 3;
-        leaf.rotation.x = -Math.PI / 2;
-        leaf.rotation.z = i * Math.PI;
-        leaf.scale.set(0.7, 0.7, 0.7);
-        leaf.castShadow = true;
-        flower.add(leaf);
-    }
-    
-    return flower;
-}
-
-function createCrystals() {
-    const crystalColors = [
-        0xadd8e6, // Light blue
-        0xff69b4, // Pink
-        0x9370db, // Medium purple
-        0x48d1cc, // Medium turquoise
-        0x00fa9a  // Medium spring green
-    ];
-    
-    for (let i = 0; i < 15; i++) {
-        const crystalGroup = new THREE.Group();
-        const color = crystalColors[Math.floor(Math.random() * crystalColors.length)];
-        
-        const crystalMaterial = new THREE.MeshStandardMaterial({
-            color: color,
-            metalness: 0.9,
-            roughness: 0.1,
-            opacity: 0.7,
-            transparent: true,
-            emissive: color,
-            emissiveIntensity: 0.3
-        });
-        
-        // Create a cluster of crystal spikes
-        const clusterSize = Math.floor(Math.random() * 4) + 3;
-        for (let j = 0; j < clusterSize; j++) {
-            const height = Math.random() * 1.5 + 1;
-            const width = Math.random() * 0.4 + 0.2;
-            
-            // Crystal geometry - pyramid-like
-            const crystalGeometry = new THREE.ConeGeometry(width, height, 5);
-            const crystal = new THREE.Mesh(crystalGeometry, crystalMaterial);
-            
-            // Position within the cluster
-            const angle = (j / clusterSize) * Math.PI * 2;
-            const distance = Math.random() * 0.5;
-            crystal.position.set(
-                Math.cos(angle) * distance,
-                height / 2 - 0.3 + Math.random() * 0.6,
-                Math.sin(angle) * distance
-            );
-            
-            // Random tilt
-            crystal.rotation.x = (Math.random() - 0.5) * 0.5;
-            crystal.rotation.z = (Math.random() - 0.5) * 0.5;
-            
-            crystal.castShadow = true;
-            crystalGroup.add(crystal);
-        }
-        
-        // Add a subtle point light inside the crystal
-        const crystalLight = new THREE.PointLight(color, 2, 5);
-        crystalLight.position.y = 0.5;
-        crystalGroup.add(crystalLight);
-        
-        // Position in the world
-        crystalGroup.position.set(
-            (Math.random() - 0.5) * 180,
-            0,
-            (Math.random() - 0.5) * 180
-        );
-        
-        // Add to scene and collection
-        scene.add(crystalGroup);
-        crystals.push(crystalGroup);
-        
-        // Make some crystals interactable
-        if (Math.random() > 0.6) {
-            interactableObjects.push({
-                object: crystalGroup,
-                type: 'crystal',
-                memoryTitle: generateMemoryTitle(),
-                isVideo: Math.random() > 0.5
-            });
-        }
-    }
-    
-    // Mark asset category as loaded
-    assetLoaded();
-}
-
-function createMushrooms() {
-    const mushroomCaps = [
-        { color: 0xff6347, spots: true }, // Red with spots
-        { color: 0x9370db, spots: false }, // Purple
-        { color: 0xffa500, spots: true }, // Orange with spots
-        { color: 0xadd8e6, spots: false } // Light blue
-    ];
-    
-    for (let i = 0; i < 30; i++) {
-        const mushroom = new THREE.Group();
-        const capStyle = mushroomCaps[Math.floor(Math.random() * mushroomCaps.length)];
-        
-        // Stem
-        const stemHeight = Math.random() * 0.5 + 0.5;
-        const stemGeometry = new THREE.CylinderGeometry(0.2, 0.15, stemHeight, 8);
-        const stemMaterial = new THREE.MeshStandardMaterial({
-            color: 0xf5f5dc, // Off-white
-            roughness: 0.7
-        });
-        const stem = new THREE.Mesh(stemGeometry, stemMaterial);
-        stem.position.y = stemHeight / 2;
-        stem.castShadow = true;
-        mushroom.add(stem);
-        
-        // Cap
-        const capSize = Math.random() * 0.4 + 0.6;
-        const capGeometry = new THREE.SphereGeometry(capSize, 16, 9, 0, Math.PI * 2, 0, Math.PI / 2);
-        const capMaterial = new THREE.MeshStandardMaterial({
-            color: capStyle.color,
-            roughness: 0.6
-        });
-        const cap = new THREE.Mesh(capGeometry, capMaterial);
-        cap.position.y = stemHeight;
-        cap.castShadow = true;
-        mushroom.add(cap);
-        
-        // Add spots if this mushroom style has them
-        if (capStyle.spots) {
-            const spotCount = Math.floor(Math.random() * 5) + 5;
-            const spotMaterial = new THREE.MeshStandardMaterial({
-                color: 0xffffff,
-                roughness: 0.5
-            });
-            
-            for (let j = 0; j < spotCount; j++) {
-                const spotSize = Math.random() * 0.08 + 0.05;
-                const spotGeo = new THREE.CircleGeometry(spotSize, 8);
-                const spot = new THREE.Mesh(spotGeo, spotMaterial);
-                
-                // Position on cap surface
-                const phi = Math.random() * Math.PI / 2.2;
-                const theta = Math.random() * Math.PI * 2;
-                
-                spot.position.x = Math.sin(phi) * Math.cos(theta) * capSize;
-                spot.position.y = stemHeight + Math.cos(phi) * capSize;
-                spot.position.z = Math.sin(phi) * Math.sin(theta) * capSize;
-                
-                // Orient normal to cap surface
-                spot.lookAt(spot.position.clone().add(new THREE.Vector3(
-                    Math.sin(phi) * Math.cos(theta),
-                    Math.cos(phi),
-                    Math.sin(phi) * Math.sin(theta)
-                )));
-                
-                mushroom.add(spot);
-            }
-        }
-        
-        // Position mushroom
-        mushroom.position.set(
-            (Math.random() - 0.5) * 200,
-            0,
-            (Math.random() - 0.5) * 200
-        );
-        
-        mushroom.rotation.y = Math.random() * Math.PI * 2;
-        mushroom.scale.multiplyScalar(Math.random() * 0.5 + 0.8); // Random scaling
-        
-        scene.add(mushroom);
-        mushrooms.push(mushroom);
-        
-        // Make some mushrooms interactable
-        if (Math.random() > 0.7) {
-            interactableObjects.push({
-                object: mushroom,
-                type: 'mushroom',
-                memoryTitle: generateMemoryTitle(),
-                isVideo: Math.random() > 0.7
-            });
-        }
-    }
-    
-    // Mark asset category as loaded
-    assetLoaded();
-}
-
-function createButterflies() {
-    const butterflyColors = [
-        0x9370db, // Purple
-        0x48d1cc, // Turquoise
-        0xff69b4, // Pink
-        0xffd700, // Gold
-        0x7fffd4  // Aquamarine
-    ];
-    
-    for (let i = 0; i < 15; i++) {
-        const butterfly = new THREE.Group();
-        const color = butterflyColors[Math.floor(Math.random() * butterflyColors.length)];
-        
-        // Body
-        const bodyGeometry = new THREE.CylinderGeometry(0.05, 0.1, 0.6, 8);
-        const bodyMaterial = new THREE.MeshStandardMaterial({
-            color: 0x333333,
-            roughness: 0.8
-        });
-        const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
-        body.rotation.x = Math.PI / 2;
-        body.castShadow = true;
-        butterfly.add(body);
-        
-        // Wings
-        const wingMaterial = new THREE.MeshStandardMaterial({
-            color: color,
-            side: THREE.DoubleSide,
-            transparent: true,
-            opacity: 0.8,
-            emissive: color,
-            emissiveIntensity: 0.2
-        });
-        
-        // Create wing shape
-        const wingShape = new THREE.Shape();
-        wingShape.moveTo(0, 0);
-        wingShape.quadraticCurveTo(0.4, 0.4, 0.8, 0);
-        wingShape.quadraticCurveTo(0.4, 0.8, 0, 0);
-        
-        const wingGeometry = new THREE.ShapeGeometry(wingShape);
-        
-        // Left wing
-        const leftWing = new THREE.Mesh(wingGeometry, wingMaterial);
-        leftWing.position.set(-0.05, 0, 0);
-        leftWing.rotation.y = Math.PI / 2;
-        leftWing.castShadow = true;
-        butterfly.add(leftWing);
-        
-        // Right wing
-        const rightWing = new THREE.Mesh(wingGeometry, wingMaterial);
-        rightWing.position.set(0.05, 0, 0);
-        rightWing.rotation.y = -Math.PI / 2;
-        rightWing.castShadow = true;
-        butterfly.add(rightWing);
-        
-        // Add animation data
-        butterfly.userData = {
-            wingFlapSpeed: Math.random() * 0.05 + 0.05,
-            wingFlapDirection: 1,
-            wingFlapAmount: 0,
-            hoverHeight: Math.random() * 3 + 2,
-            hoverSpeed: Math.random() * 0.005 + 0.002,
-            originalY: 0
-        };
-        
-        // Position in the world
-        butterfly.position.set(
-            (Math.random() - 0.5) * 200,
-            Math.random() * 4 + 2,
-            (Math.random() - 0.5) * 200
-        );
-        
-        butterfly.userData.originalY = butterfly.position.y;
-        
-        scene.add(butterfly);
-        butterflies.push(butterfly);
-    }
-    
-    // Mark asset category as loaded
-    assetLoaded();
-}
-
-function createPathways() {
-    // Create a winding pathway through the meadow
-    const pathPoints = [];
-    let x = 0, z = 0;
-    
-    // Generate a winding path with smooth curves
-    for (let i = 0; i < 40; i++) {
-        pathPoints.push(new THREE.Vector3(x, 0.01, z));
-        
-        // Random direction change
-        const angle = Math.random() * Math.PI / 6 - Math.PI / 12;
-        const distance = Math.random() * 3 + 5;
-        
-        x += Math.sin(angle) * distance;
-        z += Math.cos(angle) * distance;
-    }
-    
-    // Create a smooth curve from the points
-    const curve = new THREE.CatmullRomCurve3(pathPoints);
-    
-    // Create pathway segments along the curve
-    const pathMaterial = new THREE.MeshStandardMaterial({
-        color: 0xfff0d0,
-        roughness: 0.9
-    });
-    
-    const segments = 100;
-    for (let i = 0; i < segments; i++) {
-        const t = i / segments;
-        const point = curve.getPoint(t);
-        const tangent = curve.getTangent(t);
-        
-        // Create a path segment
-        const width = Math.random() * 0.5 + 2.5;
-        const pathGeometry = new THREE.PlaneGeometry(width, 2);
-        const pathSegment = new THREE.Mesh(pathGeometry, pathMaterial);
-        
-        // Position at curve point
-        pathSegment.position.set(point.x, 0.02, point.z);
-        
-        // Orient along curve tangent
-        const angle = Math.atan2(tangent.x, tangent.z);
-        pathSegment.rotation.y = angle;
-        pathSegment.rotation.x = -Math.PI / 2;
-        
-        scene.add(pathSegment);
-        pathways.push(pathSegment);
-        
-        // Add path decorations occasionally
-        if (Math.random() > 0.9) {
-            const decoration = createPathDecoration();
-            
-            // Position beside the path
-            const sideOffset = (Math.random() > 0.5 ? 1 : -1) * (width / 2 + Math.random() * 1 + 0.5);
-            decoration.position.set(
-                point.x + Math.cos(angle) * sideOffset,
-                0,
-                point.z - Math.sin(angle) * sideOffset
-            );
-            
-            scene.add(decoration);
-        }
-    }
-    
-    // Mark asset category as loaded
-    assetLoaded();
-}
-
-function createPathDecoration() {
-    const decorationType = Math.floor(Math.random() * 3);
-    
-    if (decorationType === 0) {
-        // Stone
-        const stoneGeometry = new THREE.SphereGeometry(Math.random() * 0.5 + 0.3, 8, 8);
-        const stoneMaterial = new THREE.MeshStandardMaterial({
-            color: 0xaaaaaa,
-            roughness: 0.9
-        });
-        
-        // Flatten bottom and add random bumps
-        const vertices = stoneGeometry.attributes.position.array;
-        for (let i = 0; i < vertices.length; i += 3) {
-            // Flatten bottom
-            if (vertices[i + 1] < 0) {
-                vertices[i + 1] = -0.1;
-            }
-            
-            // Add random bumps
-            const distFromCenter = Math.sqrt(vertices[i] * vertices[i] + vertices[i + 2] * vertices[i + 2]);
-            if (distFromCenter > 0.2) {
-                const bump = (Math.random() - 0.5) * 0.1;
-                vertices[i] += bump;
-                vertices[i + 2] += bump;
-            }
-        }
-        
-        const stone = new THREE.Mesh(stoneGeometry, stoneMaterial);
-        stone.rotation.y = Math.random() * Math.PI * 2;
-        stone.castShadow = true;
-        
-        return stone;
-    } else if (decorationType === 1) {
-        // Small signpost
-        const sign = new THREE.Group();
-        
-        // Post
-        const postGeometry = new THREE.CylinderGeometry(0.05, 0.05, 1.5, 8);
-        const woodMaterial = new THREE.MeshStandardMaterial({
-            color: 0x8b4513,
-            roughness: 0.9
-        });
-        const post = new THREE.Mesh(postGeometry, woodMaterial);
-        post.position.y = 0.75;
-        post.castShadow = true;
-        sign.add(post);
-        
-        // Sign board
-        const signBoardGeometry = new THREE.BoxGeometry(0.8, 0.4, 0.05);
-        const signBoardMaterial = new THREE.MeshStandardMaterial({
-            color: 0xffdab9,
-            roughness: 0.7
-        });
-        const signBoard = new THREE.Mesh(signBoardGeometry, signBoardMaterial);
-        signBoard.position.y = 1.3;
-        signBoard.castShadow = true;
-        sign.add(signBoard);
-        
-        sign.rotation.y = Math.random() * Math.PI * 2;
-        
-        // Make sign interactable
-        interactableObjects.push({
-            object: sign,
-            type: 'sign',
-            memoryTitle: generateMemoryTitle(),
-            isVideo: Math.random() > 0.5
-        });
-        
-        return sign;
-    } else {
-        // Lantern
-        const lantern = new THREE.Group();
-        
-        // Base
-        const baseGeometry = new THREE.CylinderGeometry(0.15, 0.2, 0.1, 8);
-        const metalMaterial = new THREE.MeshStandardMaterial({
-            color: 0x777777,
-            metalness: 0.8,
-            roughness: 0.2
-        });
-        const base = new THREE.Mesh(baseGeometry, metalMaterial);
-        base.position.y = 0.05;
-        lantern.add(base);
-        
-        // Handle
-        const handleGeometry = new THREE.TorusGeometry(0.15, 0.02, 8, 16, Math.PI);
-        const handle = new THREE.Mesh(handleGeometry, metalMaterial);
-        handle.position.y = 0.5;
-        handle.rotation.x = Math.PI;
-        lantern.add(handle);
-        
-        // Post
-        const postGeometry = new THREE.CylinderGeometry(0.02, 0.02, 0.6, 8);
-        const post = new THREE.Mesh(postGeometry, metalMaterial);
-        post.position.y = 0.3;
-        lantern.add(post);
-        
-        // Lamp
-        const lampGeometry = new THREE.SphereGeometry(0.2, 16, 16);
-        const glassColor = [0xffe4c4, 0xffdab9, 0xffd700][Math.floor(Math.random() * 3)];
-        const glassMaterial = new THREE.MeshStandardMaterial({
-            color: glassColor,
-            transparent: true,
-            opacity: 0.7,
-            emissive: glassColor,
-            emissiveIntensity: 0.5
-        });
-        const lamp = new THREE.Mesh(lampGeometry, glassMaterial);
-        lamp.position.y = 0.5;
-        lantern.add(lamp);
-        
-        // Add light source inside
-        const light = new THREE.PointLight(glassColor, 1, 5);
-        light.position.y = 0.5;
-        light.visible = false; // Only visible at night
-        lantern.add(light);
-        
-        lantern.userData = { isLantern: true, light: light };
-        
-        return lantern;
-    }
-}
-
-function generateMemoryTitle() {
-    const titles = [
-        "Starlight Memories",
-        "Echo of Dreams",
-        "Whispers of the Past",
-        "Crystal Visions",
-        "Fragments of Wonder",
-        "Twilight Moment",
-        "Meadow Secrets",
-        "Dream Fragment",
-        "Lost Echoes",
-        "Enchanted Memory",
-        "Forgotten Whisper"
-    ];
-    
-    return titles[Math.floor(Math.random() * titles.length)];
-}
-
-function assetLoaded() {
-    assetsLoaded++;
-    if (assetsLoaded >= 5) { // When all asset types are loaded
-        document.querySelector('.loading').style.display = 'none';
-    }
-}
-
-function checkLoading() {
-    // Check loading progress
-    if (assetsLoaded >= 5) {
-        document.querySelector('.loading').style.display = 'none';
-    }
-}
-
-// Interaction and controls
-function onKeyDown(e) {
-    if (e.key === 'w' || e.key === 'ArrowUp') movement.forward = true;
-    if (e.key === 's' || e.key === 'ArrowDown') movement.backward = true;
-    if (e.key === 'a' || e.key === 'ArrowLeft') movement.left = true;
-    if (e.key === 'd' || e.key === 'ArrowRight') movement.right = true;
-    if (e.key === 'e') interact();
-    if (e.key === 'h') toggleInstructions();
-}
-
-function onKeyUp(e) {
-    if (e.key === 'w' || e.key === 'ArrowUp') movement.forward = false;
-    if (e.key === 's' || e.key === 'ArrowDown') movement.backward = false;
-    if (e.key === 'a' || e.key === 'ArrowLeft') movement.left = false;
-    if (e.key === 'd' || e.key === 'ArrowRight') movement.right = false;
-}
-
-function toggleInstructions() {
-    instructionsVisible = !instructionsVisible;
-    document.getElementById('instructions').style.opacity = instructionsVisible ? 1 : 0;
-}
-
-function interact() {
-    let foundInteraction = false;
-    
-    // Check if player is near any character sprite
-    for (let obj of interactableObjects) {
-        if (obj.type === 'character' && car.position.distanceTo(obj.object.position) < INTERACTION_DISTANCE) {
-            showPopup(obj);
-            foundInteraction = true;
-            break;
-        }
-    }
-    
-    if (!foundInteraction) {
-        // Optional: you can add a subtle feedback that nothing is nearby
-        console.log("No character memories nearby");
-    }
-}
-
-function showPopup(interactableObj) {
-    document.getElementById('popup').style.display = 'flex';
-    document.getElementById('memoryTitle').textContent = interactableObj.memoryTitle;
-    
-    const useVideo = !!interactableObj.videoUrl;
-    if (useVideo) {
-        document.getElementById('popupContent').src = interactableObj.videoUrl;
-        document.getElementById('popupContent').style.display = 'block';
-        document.getElementById('popupImage').style.display = 'none';
-    } else {
-        document.getElementById('popupImage').src = interactableObj.imageUrl;
-        document.getElementById('popupImage').style.display = 'block';
-        document.getElementById('popupContent').style.display = 'none';
-    }
-}
-
-function closePopup() {
-    document.getElementById('popup').style.display = 'none';
-    document.getElementById('popupContent').src = '';
-}
-
-// Animation functions
-function updateCarPhysics() {
-    if (movement.forward) velocity += acceleration;
-    if (movement.backward) velocity -= acceleration;
-    if (!movement.forward && !movement.backward) {
-        if (velocity > 0) velocity = Math.max(0, velocity - friction);
-        if (velocity < 0) velocity = Math.min(0, velocity + friction);
-    }
-    
-    // Apply speed limits
-    velocity = Math.max(-maxSpeed / 2, Math.min(maxSpeed, velocity));
-    
-    // Update speedometer
-    document.getElementById('speedometer').textContent = `Speed: ${Math.abs(Math.round(velocity * 8))} km/h`;
-    
-    // Apply steering
-    if (movement.left) angle += turnSpeed * (velocity / maxSpeed) * (velocity > 0 ? 1 : -1);
-    if (movement.right) angle -= turnSpeed * (velocity / maxSpeed) * (velocity > 0 ? 1 : -1);
-    
-    car.rotation.y = angle;
-    
-    // Apply movement
-    const dir = new THREE.Vector3(Math.sin(angle), 0, Math.cos(angle));
-    car.position.add(dir.multiplyScalar(velocity * 0.1));
-    
-    // Add slight car tilt when turning
-    const targetTilt = -(movement.left - movement.right) * 0.15 * (velocity / maxSpeed);
-    car.rotation.z = THREE.MathUtils.lerp(car.rotation.z, targetTilt, 0.1);
-    
-    // Add slight forward tilt when accelerating/braking
-    const targetPitch = (movement.forward - movement.backward) * 0.05;
-    car.rotation.x = THREE.MathUtils.lerp(car.rotation.x, targetPitch, 0.1);
-    
-    // Check for nearby interactables
-    checkNearbyInteractables();
-
-    const distanceFromCenter = car.position.length();
-    if (distanceFromCenter > WORLD_SIZE) {
-        // Push car back inside the boundary
-        const pushBackVector = car.position.clone().normalize().multiplyScalar(WORLD_SIZE);
-        car.position.copy(pushBackVector);
-        
-        // Show boundary warning
-        const boundaryWarning = document.getElementById('boundary-warning');
-        boundaryWarning.style.display = 'block';
-        
-        // Hide warning after a short time
-        clearTimeout(boundaryWarningTimeout);
-        boundaryWarningTimeout = setTimeout(() => {
-            boundaryWarning.style.display = 'none';
-        }, 1000);
-        
-        // Reduce velocity
-        velocity *= -0.5;
-    }
-}
-
-function checkNearbyInteractables() {
-    let nearCharacterSprite = false;
-    
-    for (let obj of interactableObjects) {
-        // Only check for character sprites
-        if (obj.type === 'character' && car.position.distanceTo(obj.object.position) < INTERACTION_DISTANCE) {
-            nearCharacterSprite = true;
-            break;
-        }
-    }
-    
-    // Show or hide interaction prompt only for character sprites
-    if (nearCharacterSprite && !interactionPromptVisible) {
-        document.getElementById('interactPrompt').style.display = 'block';
-        interactionPromptVisible = true;
-    } else if (!nearCharacterSprite && interactionPromptVisible) {
-        document.getElementById('interactPrompt').style.display = 'none';
-        interactionPromptVisible = false;
-    }
-}
-
-
-
-function updateCamera() {
-    // Calculate target camera position based on car's position and orientation
-    const cameraOffset = new THREE.Vector3(
-        -Math.sin(angle) * 10,
-        6 + Math.abs(velocity) * 0.2,
-        -Math.cos(angle) * 10
-    );
-    
-    // Add slight camera shake based on velocity
-    if (Math.abs(velocity) > 5) {
-        const shakeAmount = (Math.abs(velocity) - 5) * 0.01;
-        cameraOffset.x += (Math.random() - 0.5) * shakeAmount;
-        cameraOffset.y += (Math.random() - 0.5) * shakeAmount;
-        cameraOffset.z += (Math.random() - 0.5) * shakeAmount;
-    }
-    
-    const targetCamPos = car.position.clone().add(cameraOffset);
-    
-    // Smoothly interpolate camera position
-    camera.position.lerp(targetCamPos, 0.05);
-    
-    // Make camera look at car
-    const lookAtPos = car.position.clone();
-    lookAtPos.y += 1;
-    camera.lookAt(lookAtPos);
-}
-
-function updateAnimations(deltaTime) {
-    // Update butterflies
-    for (let butterfly of butterflies) {
-        // Wing flapping animation
-        butterfly.userData.wingFlapAmount += butterfly.userData.wingFlapSpeed * butterfly.userData.wingFlapDirection;
-        
-        if (butterfly.userData.wingFlapAmount > 0.3) {
-            butterfly.userData.wingFlapDirection = -1;
-        } else if (butterfly.userData.wingFlapAmount < -0.3) {
-            butterfly.userData.wingFlapDirection = 1;
-        }
-        
-        // Apply wing rotation
-        butterfly.children[1].rotation.z = butterfly.userData.wingFlapAmount;
-        butterfly.children[2].rotation.z = -butterfly.userData.wingFlapAmount;
-        
-        // Hovering movement
-        butterfly.position.y = butterfly.userData.originalY + 
-                              Math.sin(clock.elapsedTime * butterfly.userData.hoverSpeed * 10) * 0.5;
-        
-        // Random movement
-        butterfly.position.x += Math.sin(clock.elapsedTime * 0.5 + butterfly.userData.hoverSpeed * 100) * 0.01;
-        butterfly.position.z += Math.cos(clock.elapsedTime * 0.5 + butterfly.userData.hoverSpeed * 100) * 0.01;
-        
-        // Gradually rotate to face movement direction
-        butterfly.rotation.y += Math.sin(clock.elapsedTime) * 0.01;
-    }
-    
-    // Make flowers slightly sway
-    for (let flower of flowers) {
-        flower.rotation.x = Math.sin(clock.elapsedTime * 0.5 + flower.position.x) * 0.03;
-        flower.rotation.z = Math.cos(clock.elapsedTime * 0.5 + flower.position.z) * 0.03;
-    }
-    
-    // Make crystals glow/pulse
-    for (let crystal of crystals) {
-        const pulseIntensity = 0.3 + Math.sin(clock.elapsedTime * 2 + crystal.position.x) * 0.2;
-        
-        for (let i = 0; i < crystal.children.length - 1; i++) {
-            if (crystal.children[i].material) {
-                crystal.children[i].material.emissiveIntensity = pulseIntensity;
-            }
-        }
-        
-        // Update crystal light
-        if (crystal.children[crystal.children.length - 1].type === 'PointLight') {
-            crystal.children[crystal.children.length - 1].intensity = 1 + pulseIntensity;
-        }
-    }
-    
-    // Update day/night cycle
-    updateDayNightCycle(deltaTime);
-}
-
-function updateDayNightCycle(deltaTime) {
-    // Progress day-night cycle (very slow)
-    dayNightCycle += deltaTime * 0.02;
-    if (dayNightCycle > Math.PI * 2) {
-        dayNightCycle -= Math.PI * 2;
-    }
-    
-    // Calculate time of day (0 = noon, PI = midnight)
-    const timeOfDay = dayNightCycle;
-    
-    // Determine if it's night (when sun is below horizon)
-    isNight = (timeOfDay > Math.PI / 2 && timeOfDay < Math.PI * 3 / 2);
-    
-    // Interpolate sky color based on time of day
-    const noonColor = new THREE.Color(0xc6e2ff);
-    const sunsetColor = new THREE.Color(0xff9e7a);
-    const nightColor = new THREE.Color(0x0a1a2a);
-    
-    let targetColor;
-    
-    if (timeOfDay < Math.PI / 4) {
-        // Morning to noon
-        const t = timeOfDay / (Math.PI / 4);
-        targetColor = noonColor.clone();
-    } else if (timeOfDay < Math.PI / 2) {
-        // Noon to sunset
-        const t = (timeOfDay - Math.PI / 4) / (Math.PI / 4);
-        targetColor = noonColor.clone().lerp(sunsetColor, t);
-    } else if (timeOfDay < Math.PI * 3 / 4) {
-        // Sunset to night
-        const t = (timeOfDay - Math.PI / 2) / (Math.PI / 4);
-        targetColor = sunsetColor.clone().lerp(nightColor, t);
-    } else if (timeOfDay < Math.PI * 5 / 4) {
-        // Night
-        targetColor = nightColor.clone();
-    } else if (timeOfDay < Math.PI * 3 / 2) {
-        // Night to sunrise
-        const t = (timeOfDay - Math.PI * 5 / 4) / (Math.PI / 4);
-        targetColor = nightColor.clone().lerp(sunsetColor, t);
-    } else {
-        // Sunrise to morning
-        const t = (timeOfDay - Math.PI * 3 / 2) / (Math.PI / 2);
-        targetColor = sunsetColor.clone().lerp(noonColor, t);
-    }
-    
-    // Smoothly update sky color
-    skyColor.lerp(targetColor, 0.01);
-    scene.fog.color.copy(skyColor);
-    scene.background = skyColor;
-    
-    // Update ground color based on time of day
-    const dayGroundColor = new THREE.Color(0xf7f0e8);
-    const nightGroundColor = new THREE.Color(0x4a5562);
-    const targetGroundColor = isNight ? 
-        nightGroundColor : 
-        dayGroundColor;
-    
-    groundColor.lerp(targetGroundColor, 0.01);
-    
-    // Toggle lights based on day/night
-    scene.traverse(object => {
-        // Handle different types of lights
-        if (object.type === 'PointLight' || object.type === 'SpotLight') {
-            // Don't affect the car headlights
-            if (!object.parent || object.parent !== car) {
-                object.visible = isNight;
-            }
-        }
-        
-        // Handle lanterns
-        if (object.userData && object.userData.isLantern && object.userData.light) {
-            object.userData.light.visible = isNight;
-        }
-    });
-}
-
-function animate() {
-    requestAnimationFrame(animate);
-    
-    const deltaTime = clock.getDelta();
-    
-    updateCarPhysics();
-    updateCamera();
-    updateAnimations(deltaTime);
-    
-    renderer.render(scene, camera);
-}
-
-function onWindowResize() {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-}
-</script>
-</body>
+    <!-- Touch controls -->
+    <div id="touch" class="touch" hidden>
+      <div
+        class="touch__steer"
+        data-touch="steer"
+        role="slider"
+        aria-label="Steering"
+        aria-valuemin="-1"
+        aria-valuemax="1"
+        aria-valuenow="0"
+      >
+        <span class="touch__track" aria-hidden="true"></span>
+        <span class="touch__knob" data-touch="knob" aria-hidden="true"></span>
+      </div>
+      <div class="touch__pedals">
+        <button class="touch__pedal touch__pedal--brake" type="button" data-touch="brake" aria-label="Brake and reverse">Brake</button>
+        <button class="touch__pedal touch__pedal--gas" type="button" data-touch="gas" aria-label="Accelerate">Go</button>
+      </div>
+    </div>
+
+    <!-- Photo mode -->
+    <div id="photo" class="photo" hidden>
+      <p class="photo__hint" data-ref="hint">Drag or use arrow keys to orbit · scroll or +/− to zoom</p>
+      <div class="photo__actions">
+        <button class="btn btn--ghost" type="button" data-action="photo-exit">Back</button>
+        <button class="btn btn--primary" type="button" data-action="photo-capture">
+          <svg aria-hidden="true"><use href="#i-camera" /></svg> Capture
+        </button>
+      </div>
+    </div>
+
+    <!-- Memory viewer -->
+    <dialog id="memory-dialog" class="dialog dialog--memory" aria-labelledby="memory-title" data-testid="memory-dialog">
+      <div class="dialog__head">
+        <div>
+          <p class="dialog__eyebrow" data-ref="chapter"></p>
+          <h2 id="memory-title" class="dialog__title" data-ref="title"></h2>
+        </div>
+        <button class="icon-btn" type="button" data-action="close" aria-label="Close memory">
+          <svg aria-hidden="true"><use href="#i-close" /></svg>
+        </button>
+      </div>
+      <figure class="memory__media" data-ref="media">
+        <video data-ref="video" controls playsinline preload="none" hidden></video>
+        <img data-ref="image" alt="" hidden />
+        <p class="memory__note" data-ref="note" hidden></p>
+      </figure>
+      <p class="memory__desc" data-ref="desc"></p>
+      <div class="dialog__foot">
+        <button class="btn btn--ghost" type="button" data-action="prev" aria-label="Previous memory">
+          <svg aria-hidden="true"><use href="#i-prev" /></svg> <span>Previous</span>
+        </button>
+        <span class="memory__count" data-ref="position"></span>
+        <button class="btn btn--ghost" type="button" data-action="next" aria-label="Next memory">
+          <span>Next</span> <svg aria-hidden="true"><use href="#i-next" /></svg>
+        </button>
+      </div>
+    </dialog>
+
+    <!-- Journal -->
+    <dialog id="journal-dialog" class="dialog dialog--journal" aria-labelledby="journal-title">
+      <div class="dialog__head">
+        <div>
+          <p class="dialog__eyebrow" data-ref="summary"></p>
+          <h2 id="journal-title" class="dialog__title">Memory Journal</h2>
+        </div>
+        <button class="icon-btn" type="button" data-action="close" aria-label="Close journal">
+          <svg aria-hidden="true"><use href="#i-close" /></svg>
+        </button>
+      </div>
+      <div class="journal__body" data-ref="list"></div>
+      <p class="journal__foot" data-ref="foot"></p>
+    </dialog>
+
+    <!-- Settings -->
+    <dialog id="settings-dialog" class="dialog dialog--settings" aria-labelledby="settings-title">
+      <div class="dialog__head">
+        <h2 id="settings-title" class="dialog__title">Settings</h2>
+        <button class="icon-btn" type="button" data-action="close" aria-label="Close settings">
+          <svg aria-hidden="true"><use href="#i-close" /></svg>
+        </button>
+      </div>
+      <form class="settings" data-ref="form" onsubmit="return false;">
+        <fieldset>
+          <legend>World</legend>
+          <label class="field"
+            ><span>Theme</span
+            ><select name="theme" data-testid="theme-select"></select
+          ></label>
+          <label class="field"
+            ><span>Graphics</span>
+            <select name="quality">
+              <option value="auto">Auto</option>
+              <option value="low">Low — smoothest</option>
+              <option value="medium">Medium</option>
+              <option value="high">High — prettiest</option>
+            </select>
+          </label>
+          <p class="field__note" data-ref="qualityNote"></p>
+        </fieldset>
+        <fieldset>
+          <legend>Sound</legend>
+          <label class="field field--toggle"><input type="checkbox" name="muted" /> <span>Mute all sound</span></label>
+          <label class="field"><span>Volume</span><input type="range" name="masterVolume" min="0" max="1" step="0.05" /></label>
+          <label class="field"
+            ><span>Music &amp; ambience</span><input type="range" name="musicVolume" min="0" max="1" step="0.05"
+          /></label>
+          <label class="field"><span>Effects</span><input type="range" name="sfxVolume" min="0" max="1" step="0.05" /></label>
+        </fieldset>
+        <fieldset>
+          <legend>Comfort</legend>
+          <label class="field field--toggle"><input type="checkbox" name="reducedMotion" /> <span>Reduce motion</span></label>
+          <label class="field field--toggle"><input type="checkbox" name="cameraShake" /> <span>Gentle camera shake at speed</span></label>
+          <label class="field field--toggle"><input type="checkbox" name="showHints" /> <span>Show control hints</span></label>
+          <label class="field field--toggle"><input type="checkbox" name="showMinimap" /> <span>Show mini-map</span></label>
+        </fieldset>
+        <fieldset>
+          <legend>Progress</legend>
+          <label class="field field--toggle"
+            ><input type="checkbox" name="saveProgress" /> <span>Remember found memories on this device</span></label
+          >
+          <p class="field__note">Saved only in this browser (local storage). Photos and videos are never stored.</p>
+          <div class="settings__row">
+            <button class="btn btn--ghost" type="button" data-action="restart">Restart journey</button>
+            <button class="btn btn--ghost" type="button" data-action="clear-data">Clear saved data</button>
+          </div>
+        </fieldset>
+      </form>
+    </dialog>
+
+    <!-- Help -->
+    <dialog id="help-dialog" class="dialog dialog--help" aria-labelledby="help-title">
+      <div class="dialog__head">
+        <h2 id="help-title" class="dialog__title">How to play</h2>
+        <button class="icon-btn" type="button" data-action="close" aria-label="Close help">
+          <svg aria-hidden="true"><use href="#i-close" /></svg>
+        </button>
+      </div>
+      <p>
+        Drive around the meadow and look for floating picture cards. Pull up close to one and open it to discover a memory. Follow the soft
+        path — it threads through every memory in story order.
+      </p>
+      <div class="help__cols">
+        <section>
+          <h3>Keyboard</h3>
+          <dl class="keys">
+            <dt><kbd>W</kbd> <kbd>↑</kbd></dt>
+            <dd>Accelerate</dd>
+            <dt><kbd>S</kbd> <kbd>↓</kbd></dt>
+            <dd>Brake, then reverse</dd>
+            <dt><kbd>A</kbd> <kbd>D</kbd> <kbd>←</kbd> <kbd>→</kbd></dt>
+            <dd>Steer</dd>
+            <dt><kbd>Space</kbd></dt>
+            <dd>Gentle brake</dd>
+            <dt><kbd>E</kbd> <kbd>Enter</kbd></dt>
+            <dd>Discover a nearby memory</dd>
+            <dt><kbd>J</kbd></dt>
+            <dd>Memory journal</dd>
+            <dt><kbd>T</kbd></dt>
+            <dd>Mini-map</dd>
+            <dt><kbd>P</kbd></dt>
+            <dd>Photo mode</dd>
+            <dt><kbd>H</kbd></dt>
+            <dd>Hide / show interface</dd>
+            <dt><kbd>Esc</kbd></dt>
+            <dd>Pause · close windows</dd>
+          </dl>
+        </section>
+        <section>
+          <h3>Touch</h3>
+          <dl class="keys">
+            <dt>Left pad</dt>
+            <dd>Slide left or right to steer</dd>
+            <dt>Go</dt>
+            <dd>Hold to drive forward</dd>
+            <dt>Brake</dt>
+            <dd>Hold to brake, keep holding to reverse</dd>
+            <dt>✦ Discover</dt>
+            <dd>Appears when a memory is close</dd>
+          </dl>
+        </section>
+      </div>
+    </dialog>
+
+    <!-- Pause -->
+    <dialog id="pause-dialog" class="dialog dialog--pause" aria-labelledby="pause-title">
+      <h2 id="pause-title" class="dialog__title">Paused</h2>
+      <p class="dialog__sub">Take your time. The meadow will wait.</p>
+      <div class="pause__actions">
+        <button class="btn btn--primary" type="button" data-action="resume">Resume</button>
+        <button class="btn btn--ghost" type="button" data-action="journal">Journal</button>
+        <button class="btn btn--ghost" type="button" data-action="settings">Settings</button>
+        <button class="btn btn--ghost" type="button" data-action="help">How to play</button>
+      </div>
+    </dialog>
+
+    <!-- Unsupported / error -->
+    <section id="fallback" class="screen screen--fallback" hidden aria-labelledby="fallback-title">
+      <div class="fallback__card">
+        <h1 id="fallback-title" class="fallback__title" data-ref="title">The meadow can't bloom here</h1>
+        <p data-ref="message">Your browser couldn't start 3D graphics (WebGL 2).</p>
+        <div class="fallback__actions" data-ref="actions"></div>
+        <div class="fallback__gallery" data-ref="gallery"></div>
+      </div>
+    </section>
+
+    <noscript>
+      <div class="screen screen--fallback">
+        <div class="fallback__card">
+          <h1 class="fallback__title">Starfall Meadow needs JavaScript</h1>
+          <p>Please enable JavaScript to enter the meadow.</p>
+        </div>
+      </div>
+    </noscript>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
 </html>

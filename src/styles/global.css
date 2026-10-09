@@ -1,0 +1,374 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: linear-gradient(180deg, var(--soft-sky), var(--sakura));
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#scene {
+  position: fixed;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  touch-action: none; /* only the 3D canvas — menus keep native gestures */
+}
+
+#scene.is-photo {
+  cursor: grab;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+svg {
+  width: 1.15em;
+  height: 1.15em;
+  flex: none;
+}
+
+kbd {
+  display: inline-block;
+  min-width: 1.6em;
+  padding: 0 0.4em;
+  border-radius: 6px;
+  background: var(--surface-strong);
+  border: 1px solid var(--hairline);
+  border-bottom-width: 2px;
+  font: 600 0.85em/1.5 var(--font-ui);
+  text-align: center;
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---------- buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--tap);
+  padding: 0 var(--space-5);
+  border: 0;
+  border-radius: var(--radius-pill);
+  font: 600 1rem/1 var(--font-ui);
+  color: var(--ink);
+  cursor: pointer;
+  transition:
+    transform var(--dur-fast) var(--ease),
+    box-shadow var(--dur) var(--ease),
+    background-color var(--dur) var(--ease);
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn--primary {
+  background: linear-gradient(135deg, var(--accent-soft), var(--accent));
+  color: var(--on-accent);
+  box-shadow: var(--shadow-soft);
+}
+
+.btn--primary:hover {
+  box-shadow: var(--shadow-lift);
+}
+
+.btn--ghost {
+  background: var(--surface-soft);
+  border: 1px solid var(--hairline);
+}
+
+.btn--ghost:hover {
+  background: var(--surface-strong);
+}
+
+.btn--lg {
+  min-height: 56px;
+  padding: 0 var(--space-6);
+  font-size: 1.1rem;
+}
+
+.btn--icon {
+  width: var(--tap);
+  padding: 0;
+}
+
+.link {
+  background: none;
+  border: 0;
+  padding: var(--space-2);
+  color: var(--text-muted);
+  font: 500 0.95rem var(--font-ui);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.link:hover {
+  color: var(--ink);
+}
+
+.icon-btn {
+  display: inline-grid;
+  place-items: center;
+  width: var(--tap);
+  height: var(--tap);
+  border: 0;
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--shadow-soft);
+  cursor: pointer;
+  transition:
+    transform var(--dur-fast) var(--ease),
+    background-color var(--dur) var(--ease);
+}
+
+.icon-btn:hover {
+  transform: translateY(-1px);
+  background: var(--surface-strong);
+}
+
+.icon-btn[aria-pressed='false'] {
+  opacity: 0.6;
+}
+
+/* ---------- full-screen layers ---------- */
+
+.screen {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: var(--gutter);
+  padding-top: max(16px, env(safe-area-inset-top));
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
+}
+
+.screen--loading {
+  z-index: 60;
+  background: radial-gradient(ellipse at 50% 30%, var(--cream), var(--lavender) 70%);
+  transition: opacity var(--dur-slow) var(--ease);
+}
+
+.screen--loading.is-done {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loading__inner {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+  text-align: center;
+}
+
+.loading__mark {
+  color: var(--accent);
+  font-size: 40px;
+  animation: twinkle 2.4s var(--ease) infinite;
+}
+
+.loading__brand {
+  margin: 0;
+  font: 700 2rem/1 var(--font-display);
+  letter-spacing: 0.3em;
+  padding-left: 0.3em;
+}
+
+.loading__label {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.progress {
+  --p: 0%;
+  width: min(240px, 60vw);
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.7);
+  overflow: hidden;
+}
+
+.progress > span {
+  display: block;
+  height: 100%;
+  width: var(--p);
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--sakura), var(--accent));
+  transition: width var(--dur) var(--ease);
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.82) rotate(20deg);
+    opacity: 0.7;
+  }
+}
+
+/* Welcome — the meadow stays visible behind a soft card */
+.screen--welcome {
+  background: linear-gradient(180deg, rgba(255, 241, 216, 0) 30%, rgba(200, 196, 236, 0.45));
+  align-items: end;
+  justify-items: start;
+  padding: clamp(16px, 6vw, 72px);
+}
+
+.welcome__card {
+  width: min(460px, 100%);
+  padding: var(--space-6);
+  border-radius: var(--radius-large);
+  background: var(--surface);
+  box-shadow: var(--shadow-lift);
+  animation: rise var(--dur-slow) var(--ease) both;
+}
+
+.welcome__eyebrow {
+  margin: 0 0 var(--space-2);
+  font-size: 0.8rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.welcome__title {
+  margin: 0;
+  font: 700 clamp(2rem, 6vw, 2.75rem) / 1.1 var(--font-display);
+}
+
+.welcome__tagline {
+  margin: var(--space-2) 0 var(--space-3);
+  font-size: 1.15rem;
+  font-style: italic;
+  color: var(--ink);
+}
+
+.welcome__intro {
+  margin: 0 0 var(--space-5);
+  color: var(--text-muted);
+}
+
+.welcome__actions {
+  display: grid;
+  gap: var(--space-3);
+  justify-items: start;
+}
+
+.welcome__secondary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.welcome__progress {
+  margin: var(--space-4) 0 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+/* Fallback */
+.screen--fallback {
+  z-index: 70;
+  overflow-y: auto;
+  align-items: start;
+  background: radial-gradient(ellipse at 50% 0%, var(--cream), var(--lavender));
+}
+
+.fallback__card {
+  width: min(880px, 100%);
+  margin: 6vh auto;
+  padding: var(--space-6);
+  border-radius: var(--radius-large);
+  background: var(--surface);
+  box-shadow: var(--shadow-lift);
+}
+
+.fallback__title {
+  margin: 0 0 var(--space-3);
+  font: 700 1.8rem/1.2 var(--font-display);
+}
+
+.fallback__actions {
+  margin: var(--space-4) 0;
+}
+
+.fallback__gallery h2 {
+  font: 700 1.2rem var(--font-display);
+}
+
+/* Discovery flash — a soft bloom, not a strobe */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 25;
+  background: radial-gradient(circle at 50% 55%, rgba(255, 236, 190, 0.55), transparent 60%);
+  opacity: 0;
+}
+
+body.is-discovering::after {
+  animation: bloom 900ms var(--ease);
+}
+
+@keyframes bloom {
+  30% {
+    opacity: 1;
+  }
+}
+
+.diagnostics {
+  position: fixed;
+  left: 8px;
+  bottom: 8px;
+  z-index: 90;
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(20, 18, 34, 0.78);
+  color: #d9fbe6;
+  font:
+    11px/1.45 ui-monospace,
+    Menlo,
+    Consolas,
+    monospace;
+  pointer-events: none;
+}

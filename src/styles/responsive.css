@@ -1,0 +1,146 @@
+/* Phones (portrait) */
+@media (max-width: 600px) {
+  .screen--welcome {
+    align-items: end;
+    justify-items: stretch;
+    padding: var(--gutter);
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
+
+  .welcome__card {
+    padding: var(--space-5);
+  }
+
+  .welcome__actions {
+    justify-items: stretch;
+  }
+
+  .welcome__actions .link {
+    justify-self: center;
+  }
+
+  .pill__label {
+    display: none;
+  }
+
+  .hud__tools {
+    gap: 6px;
+  }
+
+  .hud__tools .icon-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .minimap canvas {
+    width: 112px !important;
+    height: 112px !important;
+  }
+
+  .hint {
+    right: max(16px, env(safe-area-inset-right));
+    max-width: none;
+  }
+
+  .dialog {
+    padding: var(--space-4);
+  }
+
+  .dialog__foot .btn span {
+    display: none;
+  }
+
+  .field {
+    grid-template-columns: 1fr;
+    gap: var(--space-1);
+  }
+
+  .field--toggle {
+    grid-template-columns: auto 1fr;
+  }
+
+  .journal__grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+}
+
+/* Very narrow phones: hide the least important tool to keep targets ≥ 40px */
+@media (max-width: 360px) {
+  .hud__tools [data-action='photo'] {
+    display: none;
+  }
+}
+
+/* Short landscape phones: compact everything vertically */
+@media (max-height: 480px) and (orientation: landscape) {
+  .screen--welcome {
+    align-items: center;
+  }
+
+  .welcome__card {
+    padding: var(--space-4) var(--space-5);
+  }
+
+  .welcome__intro {
+    display: none;
+  }
+
+  .minimap canvas {
+    width: 96px !important;
+    height: 96px !important;
+  }
+
+  .memory__media video,
+  .memory__media img {
+    max-height: 56dvh;
+  }
+
+  .touch__steer {
+    width: 150px;
+    height: 72px;
+  }
+
+  .touch__knob {
+    width: 52px;
+    height: 52px;
+    margin: -26px 0 0 -26px;
+  }
+
+  .touch__pedal {
+    width: 66px;
+    height: 66px;
+  }
+
+  .touch__pedal--gas {
+    width: 78px;
+    height: 78px;
+  }
+}
+
+/* Large screens: give the welcome card a calm asymmetric placement */
+@media (min-width: 1200px) {
+  .screen--welcome {
+    padding: 8vh 7vw;
+  }
+}
+
+/* Touch phones (portrait or short landscape): keep the bottom of the screen for thumbs and the Discover button */
+@media (max-width: 600px), (max-height: 480px) {
+  body:has(.touch:not([hidden])) .speedo {
+    top: calc(max(12px, env(safe-area-inset-top)) + var(--tap) + var(--space-3));
+    left: max(16px, env(safe-area-inset-left));
+    right: auto;
+    bottom: auto;
+    min-width: 88px;
+    padding: 6px var(--space-3) var(--space-2);
+  }
+
+  body:has(.touch:not([hidden])) .speedo__value > span:first-child {
+    font-size: 1.25rem;
+  }
+}
+
+/* Never let the onboarding hint cover an available interaction */
+.hud:has(.prompt:not([hidden])) .hint {
+  display: none;
+}

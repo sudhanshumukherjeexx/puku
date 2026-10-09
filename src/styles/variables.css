@@ -1,0 +1,69 @@
+:root {
+  /* Palette — Japanese pastel */
+  --sakura: #f6c7d5;
+  --lavender: #c8c4ec;
+  --matcha: #bde4d5;
+  --cream: #fff1d8;
+  --soft-sky: #c9e7f4;
+  --peach: #ffd6bb;
+  --gold: #f2c45a;
+
+  /* Theme-driven accents (updated by ThemeManager) */
+  --accent: #b78ad9;
+  --accent-soft: #f6c7d5;
+
+  /* Text — contrast checked against --surface (≥ 7:1 / ≥ 4.5:1) */
+  --ink: #333448;
+  --text-muted: #5f6276;
+  --on-accent: #2b2240;
+
+  /* Surfaces */
+  --surface: rgba(255, 255, 255, 0.9);
+  --surface-soft: rgba(255, 255, 255, 0.74);
+  --surface-strong: #fffdfa;
+  --hairline: rgba(51, 52, 72, 0.1);
+  --scrim: rgba(43, 36, 64, 0.42);
+
+  /* Shape & depth */
+  --radius-small: 10px;
+  --radius-medium: 16px;
+  --radius-large: 24px;
+  --radius-pill: 999px;
+  --shadow-soft: 0 6px 24px rgba(80, 64, 120, 0.14);
+  --shadow-lift: 0 12px 36px rgba(80, 64, 120, 0.2);
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --gutter: max(16px, env(safe-area-inset-left));
+
+  /* Type */
+  --font-ui: system-ui, -apple-system, 'Segoe UI', Roboto, 'Hiragino Sans', 'Noto Sans', sans-serif;
+  --font-display: 'Comfortaa', var(--font-ui);
+
+  /* Motion */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 160ms;
+  --dur: 280ms;
+  --dur-slow: 520ms;
+
+  --tap: 44px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 1ms;
+    --dur: 1ms;
+    --dur-slow: 1ms;
+  }
+}
+
+:root.reduce-motion {
+  --dur-fast: 1ms;
+  --dur: 1ms;
+  --dur-slow: 1ms;
+}

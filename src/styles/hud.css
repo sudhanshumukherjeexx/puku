@@ -1,0 +1,355 @@
+.hud {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  padding: max(12px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom))
+    max(16px, env(safe-area-inset-left));
+  transition: opacity var(--dur) var(--ease);
+}
+
+.hud > * {
+  pointer-events: auto;
+}
+
+.hud.is-collapsed > :not(.toasts) {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.hud__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  pointer-events: none;
+}
+
+.hud__top > * {
+  pointer-events: auto;
+}
+
+.hud__tools {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--tap);
+  padding: 0 var(--space-4);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+  color: var(--ink);
+  font: 500 0.95rem var(--font-ui);
+  cursor: pointer;
+}
+
+.pill svg {
+  color: var(--accent);
+}
+
+.pill strong {
+  font-weight: 700;
+}
+
+/* Mini-map */
+.minimap {
+  position: absolute;
+  top: calc(max(12px, env(safe-area-inset-top)) + var(--tap) + var(--space-3));
+  right: max(16px, env(safe-area-inset-right));
+  padding: 6px;
+  border-radius: 50%;
+  background: var(--surface-soft);
+  box-shadow: var(--shadow-soft);
+  pointer-events: none;
+}
+
+.minimap canvas {
+  display: block;
+  border-radius: 50%;
+}
+
+/* Interaction prompt */
+.prompt {
+  position: absolute;
+  left: 50%;
+  bottom: calc(max(12px, env(safe-area-inset-bottom)) + 96px);
+  transform: translateX(-50%);
+  animation: prompt-in var(--dur) var(--ease) both;
+}
+
+.prompt__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 52px;
+  padding: 0 var(--space-5);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--surface-strong);
+  color: var(--ink);
+  font: 600 1rem var(--font-ui);
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--accent) 35%, transparent),
+    var(--shadow-lift);
+  cursor: pointer;
+}
+
+.prompt__btn svg {
+  color: var(--gold);
+  animation: twinkle 2s var(--ease) infinite;
+}
+
+@keyframes prompt-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+}
+
+/* Onboarding hint */
+.hint {
+  position: absolute;
+  left: max(16px, env(safe-area-inset-left));
+  bottom: calc(max(12px, env(safe-area-inset-bottom)) + 8px);
+  max-width: 300px;
+  padding: var(--space-4);
+  border-radius: var(--radius-medium);
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+  font-size: 0.92rem;
+  animation: rise var(--dur-slow) var(--ease) both;
+}
+
+.hint__title {
+  margin: 0 0 var(--space-2);
+  font: 700 0.95rem var(--font-display);
+}
+
+.hint__list {
+  margin: 0 0 var(--space-2);
+  padding-left: 1.1em;
+  color: var(--text-muted);
+}
+
+.hint__list li + li {
+  margin-top: 2px;
+}
+
+/* Speedometer */
+.speedo {
+  position: absolute;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(12px, env(safe-area-inset-bottom));
+  min-width: 112px;
+  padding: var(--space-2) var(--space-4) var(--space-3);
+  border-radius: var(--radius-medium);
+  background: var(--surface-soft);
+  box-shadow: var(--shadow-soft);
+  pointer-events: none;
+}
+
+.speedo__value {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-1);
+  font-variant-numeric: tabular-nums;
+}
+
+.speedo__value > span:first-child {
+  font: 700 1.6rem/1.2 var(--font-display);
+}
+
+.speedo__unit {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.speedo__bar {
+  height: 4px;
+  margin-top: 4px;
+  border-radius: var(--radius-pill);
+  background: rgba(51, 52, 72, 0.1);
+  overflow: hidden;
+}
+
+.speedo__bar > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent-soft), var(--accent));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 120ms linear;
+}
+
+/* Toasts */
+.toasts {
+  position: absolute;
+  top: calc(max(12px, env(safe-area-inset-top)) + var(--tap) + var(--space-3));
+  left: 50%;
+  transform: translateX(-50%);
+  display: grid;
+  gap: var(--space-2);
+  width: min(360px, calc(100vw - 32px));
+  pointer-events: none;
+}
+
+.toast {
+  display: grid;
+  gap: 2px;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-medium);
+  background: var(--surface-strong);
+  box-shadow: var(--shadow-soft);
+  text-align: center;
+  font-size: 0.92rem;
+  animation: rise var(--dur) var(--ease) both;
+  transition: opacity var(--dur) var(--ease);
+}
+
+.toast span {
+  color: var(--text-muted);
+}
+
+.toast--milestone {
+  background: linear-gradient(135deg, var(--cream), #fff);
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--gold) 45%, transparent),
+    var(--shadow-lift);
+}
+
+.toast.is-leaving {
+  opacity: 0;
+}
+
+/* Touch controls */
+.touch {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 21;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 0 max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.touch > * {
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.touch__steer {
+  position: relative;
+  width: 168px;
+  height: 84px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-soft);
+  box-shadow: var(--shadow-soft);
+}
+
+.touch__track {
+  position: absolute;
+  inset: 50% 22px auto;
+  height: 4px;
+  transform: translateY(-50%);
+  border-radius: var(--radius-pill);
+  background: rgba(51, 52, 72, 0.12);
+}
+
+.touch__knob {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 60px;
+  height: 60px;
+  margin: -30px 0 0 -30px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-soft), var(--accent));
+  box-shadow: var(--shadow-soft);
+  transition: transform 60ms linear;
+}
+
+.touch__pedals {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-end;
+}
+
+.touch__pedal {
+  width: 76px;
+  height: 76px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+  font: 700 0.95rem var(--font-ui);
+  color: var(--ink);
+}
+
+.touch__pedal--gas {
+  width: 92px;
+  height: 92px;
+  background: linear-gradient(135deg, var(--matcha), #8fd6b9);
+}
+
+.touch__pedal--brake {
+  background: linear-gradient(135deg, var(--peach), #ffb79a);
+}
+
+.touch__pedal.is-pressed {
+  transform: scale(0.94);
+  box-shadow: none;
+}
+
+/* With touch controls visible, lift the speedometer and prompt above them */
+body:has(.touch:not([hidden])) .speedo {
+  bottom: calc(max(16px, env(safe-area-inset-bottom)) + 108px);
+}
+
+body:has(.touch:not([hidden])) .hint {
+  bottom: calc(max(16px, env(safe-area-inset-bottom)) + 100px);
+}
+
+body:has(.touch:not([hidden])) .prompt {
+  bottom: calc(max(16px, env(safe-area-inset-bottom)) + 112px);
+}
+
+/* Photo mode */
+.photo {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 30;
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--gutter) max(20px, env(safe-area-inset-bottom));
+  pointer-events: none;
+}
+
+.photo > * {
+  pointer-events: auto;
+}
+
+.photo__hint {
+  margin: 0;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  background: var(--surface-soft);
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.photo__actions {
+  display: flex;
+  gap: var(--space-3);
+}

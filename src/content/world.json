@@ -1,0 +1,216 @@
+{
+  "title": "Starfall Meadow",
+  "tagline": "Every journey holds a memory.",
+  "intro": "A small, dreamy world filled with little moments waiting to be discovered.",
+  "seed": 2025,
+  "defaultTheme": "enchanted-dream",
+  "placement": {
+    "mode": "spiral",
+    "echoes": 0
+  },
+  "memories": [
+    {
+      "id": "memory-01",
+      "chapter": "Beginnings",
+      "title": "First Glances",
+      "description": "School corridors, crisp uniforms, and the very first hellos.",
+      "image": "assets/memories/memory-01.webp",
+      "thumbnail": "assets/memories/memory-01-thumb.webp",
+      "video": "assets/memories/memory-01.mp4",
+      "alt": "Illustration of two students meeting in a busy school corridor."
+    },
+    {
+      "id": "memory-02",
+      "chapter": "Beginnings",
+      "title": "City Lights, New Faces",
+      "description": "An evening in the city, a bucket hat, and a crowd of friends.",
+      "image": "assets/memories/memory-02.webp",
+      "thumbnail": "assets/memories/memory-02-thumb.webp",
+      "video": "assets/memories/memory-02.mp4",
+      "alt": "Illustration of a girl in a bucket hat walking a city street at dusk with friends."
+    },
+    {
+      "id": "memory-03",
+      "chapter": "Beginnings",
+      "title": "Goodnight Texts",
+      "description": "Two screens glowing late into the night.",
+      "image": "assets/memories/memory-03.webp",
+      "thumbnail": "assets/memories/memory-03-thumb.webp",
+      "video": "assets/memories/memory-03.mp4",
+      "alt": "Split illustration of two people texting each other from their beds at night."
+    },
+    {
+      "id": "memory-04",
+      "chapter": "Beginnings",
+      "title": "Wandering the Mall",
+      "description": "Escalators, shop windows, and no particular plan.",
+      "image": "assets/memories/memory-04.webp",
+      "thumbnail": "assets/memories/memory-04-thumb.webp",
+      "video": "assets/memories/memory-04.mp4",
+      "alt": "Illustration of three friends standing together inside a shopping mall."
+    },
+    {
+      "id": "memory-05",
+      "chapter": "Little Adventures",
+      "title": "Pizza for Two",
+      "description": "A shared pizza and two cold drinks.",
+      "image": "assets/memories/memory-05.webp",
+      "thumbnail": "assets/memories/memory-05-thumb.webp",
+      "video": "assets/memories/memory-05.mp4",
+      "alt": "Illustration of two people sitting across a table sharing a pizza."
+    },
+    {
+      "id": "memory-06",
+      "chapter": "Little Adventures",
+      "title": "Scooter Rides at Sunset",
+      "description": "Warm wind and a golden road.",
+      "image": "assets/memories/memory-06.webp",
+      "thumbnail": "assets/memories/memory-06-thumb.webp",
+      "video": "assets/memories/memory-06.mp4",
+      "alt": "Illustration of two people riding a scooter down a tree-lined road at sunset."
+    },
+    {
+      "id": "memory-07",
+      "chapter": "Little Adventures",
+      "title": "By the Water",
+      "description": "A quiet afternoon at the water's edge.",
+      "image": "assets/memories/memory-07.webp",
+      "thumbnail": "assets/memories/memory-07-thumb.webp",
+      "video": "assets/memories/memory-07.mp4",
+      "alt": "Illustration of two people smiling beside a lake in soft afternoon light."
+    },
+    {
+      "id": "memory-08",
+      "chapter": "Little Adventures",
+      "title": "Snacks at Priti Corner",
+      "description": "Street snacks and big laughs.",
+      "image": "assets/memories/memory-08.webp",
+      "thumbnail": "assets/memories/memory-08-thumb.webp",
+      "video": "assets/memories/memory-08.mp4",
+      "alt": "Illustration of two people laughing and eating snacks outside a shop called Priti Corner."
+    },
+    {
+      "id": "memory-09",
+      "chapter": "Across the Distance",
+      "title": "Apart, but Together",
+      "description": "Different windows, the same conversation.",
+      "image": "assets/memories/memory-09.webp",
+      "thumbnail": "assets/memories/memory-09-thumb.webp",
+      "video": "assets/memories/memory-09.mp4",
+      "alt": "Split illustration of two people at home messaging each other, one wearing a face mask."
+    },
+    {
+      "id": "memory-10",
+      "chapter": "Across the Distance",
+      "title": "A Grid of Smiles",
+      "description": "Video calls full of funny faces.",
+      "image": "assets/memories/memory-10.webp",
+      "thumbnail": "assets/memories/memory-10-thumb.webp",
+      "video": "assets/memories/memory-10.mp4",
+      "alt": "Grid of video-call frames showing a smiling girl with glasses in many poses."
+    },
+    {
+      "id": "memory-11",
+      "chapter": "Across the Distance",
+      "title": "Dinner Glow",
+      "description": "A warm evening out, glass raised.",
+      "image": "assets/memories/memory-11.webp",
+      "thumbnail": "assets/memories/memory-11-thumb.webp",
+      "video": "assets/memories/memory-11.mp4",
+      "alt": "Illustration of a woman raising a glass at a cosy restaurant table with grilled food."
+    },
+    {
+      "id": "memory-12",
+      "chapter": "By the Sea",
+      "title": "Beachside Café",
+      "description": "Palm leaves, sea breeze, and a slow lunch.",
+      "image": "assets/memories/memory-12.webp",
+      "thumbnail": "assets/memories/memory-12-thumb.webp",
+      "video": "assets/memories/memory-12.mp4",
+      "alt": "Illustration of two people at a beachside café table overlooking the sea."
+    },
+    {
+      "id": "memory-13",
+      "chapter": "By the Sea",
+      "title": "Hugs on the Shore",
+      "description": "A silly hat and the biggest hug.",
+      "image": "assets/memories/memory-13.webp",
+      "thumbnail": "assets/memories/memory-13-thumb.webp",
+      "video": "assets/memories/memory-13.mp4",
+      "alt": "Illustration of two people hugging on a beach, one wearing a frog hat."
+    },
+    {
+      "id": "memory-14",
+      "chapter": "By the Sea",
+      "title": "Fort Selfie",
+      "description": "Old stone walls, blue water, big grins.",
+      "image": "assets/memories/memory-14.webp",
+      "thumbnail": "assets/memories/memory-14-thumb.webp",
+      "video": "assets/memories/memory-14.mp4",
+      "alt": "Illustration of two people taking a selfie in front of a seaside fort."
+    },
+    {
+      "id": "memory-15",
+      "chapter": "By the Sea",
+      "title": "Sandy Toes with Friends",
+      "description": "Friends, sand, and a golden afternoon.",
+      "image": "assets/memories/memory-15.webp",
+      "thumbnail": "assets/memories/memory-15-thumb.webp",
+      "video": "assets/memories/memory-15.mp4",
+      "alt": "Illustration of four friends sitting together on a sandy beach."
+    },
+    {
+      "id": "memory-16",
+      "chapter": "By the Sea",
+      "title": "Walking the Sunset",
+      "description": "Hand in hand along the shoreline.",
+      "image": "assets/memories/memory-16.webp",
+      "thumbnail": "assets/memories/memory-16-thumb.webp",
+      "video": "assets/memories/memory-16.mp4",
+      "alt": "Illustration of two people walking hand in hand on a beach at sunset."
+    },
+    {
+      "id": "memory-17",
+      "chapter": "By the Sea",
+      "title": "Watching the Waves",
+      "description": "Saying nothing, needing nothing.",
+      "image": "assets/memories/memory-17.webp",
+      "thumbnail": "assets/memories/memory-17-thumb.webp",
+      "video": "assets/memories/memory-17.mp4",
+      "alt": "Illustration of two people seen from behind, standing in the shallows watching a sunset."
+    },
+    {
+      "id": "memory-18",
+      "chapter": "Home",
+      "title": "Side by Side",
+      "description": "Wherever the road goes next.",
+      "image": "assets/memories/memory-18.webp",
+      "thumbnail": "assets/memories/memory-18-thumb.webp",
+      "video": "assets/memories/memory-18.mp4",
+      "alt": "Illustration of two people sitting close together at home, smiling."
+    }
+  ],
+  "milestones": [
+    {
+      "id": "fireflies",
+      "at": 3,
+      "effect": "fireflies",
+      "title": "The meadow is waking up",
+      "message": "Fireflies have come out to light your way."
+    },
+    {
+      "id": "wishing-tree",
+      "at": 9,
+      "effect": "landmark",
+      "title": "Something is blooming",
+      "message": "A wishing tree has grown at the heart of the meadow."
+    },
+    {
+      "id": "starfall",
+      "at": "all",
+      "effect": "finale",
+      "title": "Every journey holds a memory",
+      "message": "You found every memory. Look up — the stars are falling for you."
+    }
+  ]
+}

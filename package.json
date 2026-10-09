@@ -1,0 +1,46 @@
+{
+  "name": "puku",
+  "version": "2.0.0",
+  "private": true,
+  "description": "PUKU — Starfall Meadow: Dream Drive. A tiny, browser-native 3D world for driving around and discovering memories.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Sudhanshu Mukherjee",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sudhanshumukherjeexx/puku.git"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:smoke": "playwright test --grep @smoke",
+    "media": "node scripts/optimize-media.mjs",
+    "validate:memories": "node scripts/validate-memories.mjs",
+    "check": "npm run lint && npm run test && npm run validate:memories && npm run build",
+    "bench": "node scripts/benchmark.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@fontsource/comfortaa": "^5.3.0",
+    "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.64.0",
+    "eslint": "^10.12.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.13.0",
+    "prettier": "^3.9.9",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.3"
+  }
+}
